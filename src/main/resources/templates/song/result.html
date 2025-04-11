@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Search Results</title>
+</head>
+<body>
+<h2>검색 결과</h2>
+<ul>
+  <li th:each="track : ${tracks}">
+    <p th:text="${track.name} + ' - ' + ${track.artists[0].name}"></p>
+  </li>
+</ul>
+</body>
+</html>

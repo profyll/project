@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify 검색</title>
+</head>
+<body>
+<h2>Spotify 노래 검색</h2>
+
+<form th:action="@{/song/search}" method="post">
+    <label for="q">검색어:</label>
+    <input type="text" id="q" name="q" required />
+    <button type="submit">검색</button>
+</form>
+</body>
+</html>
