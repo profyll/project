@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.wrapper.spotify.model_objects.specification.Track;
 
-
 import java.util.Arrays;
 
 @Controller
