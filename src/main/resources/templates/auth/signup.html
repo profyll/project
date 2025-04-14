@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>가입하기 | profify</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            width: 360px;
+            background-color: #1e1e1e;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 32px;
+            line-height: 1.2;
+        }
+
+        h2 small {
+            display: block;
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+
+        label {
+            font-size: 0.9em;
+            color: #b3b3b3;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 85%;
+            margin: 0 auto 16px auto;
+            padding: 12px;
+            background-color: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: white;
+            display: block;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            margin: 0 auto 6px;
+            width: 85%;
+        }
+
+        button[type="submit"] {
+            width: calc(100% - 60px);
+            padding: 12px;
+            background-color: #1db954;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 0 30px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #888;
+            margin: 24px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-top: 1px solid #333;
+        }
+
+        .divider::before {
+            margin-right: 12px;
+        }
+
+        .divider::after {
+            margin-left: 12px;
+        }
+
+        .kakao-login {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .kakao-login img {
+            width: 100%;
+            max-width: 300px;
+            transition: transform 0.2s, box-shadow 0.3s, filter 0.3s;
+        }
+
+        .kakao-login a:hover img {
+            transform: scale(1.01);
+            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.06);
+            filter: brightness(1.03);
+        }
+    </style>
+</head>
+<body>
+<div class="signup-container">
+    <h2>profify에 가입하기<small> | 가입하고 원하는 콘텐츠를 감상하세요 </small></h2>
+
+    <form th:action="@{/auth/signup}" method="post" autocomplete="off">
+        <div class="form-row">
+            <div class="form-header">
+                <label>이메일주소</label>
+            </div>
+            <input type="email" name="email" placeholder="이메일주소" />
+        </div>
+
+        <div class="form-row">
+            <div class="form-header">
+                <label>비밀번호</label>
+            </div>
+            <input type="password" name="password" placeholder="비밀번호" />
+        </div>
+
+        <div class="form-row">
+            <div class="form-header">
+                <label>활동명</label>
+            </div>
+            <input type="text" name="nickname" placeholder="활동명" />
+        </div>
+
+        <button type="submit">가입하기</button>
+    </form>
+
+    <!-- 구분선 -->
+    <div class="divider">또는</div>
+
+    <!-- 카카오 로그인 -->
+    <div class="kakao-login">
+        <a th:href="@{https://kauth.kakao.com/oauth/authorize
+                (client_id=${kakaoClientId}, redirect_uri=${kakaoRedirectUri}, response_type='code')}">
+            <img th:src="@{/icons/kakao_login.png}" alt="카카오 로그인 버튼"/>
+        </a>
+    </div>
+</div>
+</body>
+</html>
