@@ -1,11 +1,13 @@
 package com.example.project.controller;
 
 import com.example.project.entity.User;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -24,5 +26,11 @@ public class UserController {
             return "redirect:/index";
         }
         return "user/mypage";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/index"; // 로그아웃 후 /index로 이동
     }
 }
