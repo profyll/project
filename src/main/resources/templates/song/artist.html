@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>아티스트 정보</h2>
+
+<p><strong>이름:</strong> <span th:text="${name}"></span></p>
+
+<p th:if="${genres.length > 0}">
+    <strong>장르:</strong> <span th:text="${genres[0]}"></span>
+</p>
+
+<img th:if="${imageUrl != null}" th:src="${imageUrl}" width="200" />
+
+<ul th:each="track :${tracks}">
+    <li th:text="${track.name}"></li>
+</ul>
+</body>
+</html>

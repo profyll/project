@@ -2,7 +2,7 @@ package com.example.project.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.project.Repository.UserRepository;
+import com.example.project.repository.UserRepository;
 import com.example.project.entity.User;
 import com.example.project.request.LoginRequest;
 import com.example.project.service.KakaoApiService;

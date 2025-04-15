@@ -1,7 +1,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.project.Repository.UserRepository">
+<mapper namespace="com.example.project.repository.UserRepository">
      <insert id="create" parameterType="user">
             insert into users (email, password, gender, nickname, image, created_at, provider, provider_id, picture)
             values ( #{email}, #{password}, #{gender}, #{nickname}, #{image}, now(), #{provider}, #{providerId}, #{picture})
