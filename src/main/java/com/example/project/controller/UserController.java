@@ -31,6 +31,6 @@ public class UserController {
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/index"; // 로그아웃 후 /index로 이동
+        return "redirect:/index";
     }
 }
