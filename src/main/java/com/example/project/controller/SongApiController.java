@@ -1,9 +1,13 @@
 package com.example.project.controller;
 
 import com.example.project.AccessToken;
+import com.example.project.entity.Comment;
 import com.example.project.entity.Song;
+import com.example.project.entity.User;
 import com.example.project.repository.ArtistRepository;
+import com.example.project.repository.CommentRepository;
 import com.example.project.repository.SongRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
@@ -28,6 +32,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -38,6 +43,7 @@ public class SongApiController {
     private SpotifyApi spotifyApi;
     private SongRepository songRepository;
     private ArtistRepository artistRepository;
+    private CommentRepository commentRepository;
 
     @GetMapping("/search")
     public String searchForm() {
@@ -144,6 +150,44 @@ public class SongApiController {
             return "error";
         }
     }
+
+
+    @GetMapping("/song/track/{songId}/comment")
+    public String getComments(@PathVariable("songId") String songId, Model model) throws JsonProcessingException {
+        List<Comment> comments = commentRepository.getCommentsBySongId(songId);
+        model.addAttribute("comments", comments);
+        model.addAttribute("songId", songId);
+        return "song/track";
+    }
+
+    @PostMapping("/song/track/{songId}/comment")
+    public String addComment(@ModelAttribute Comment comment,
+                             @SessionAttribute("user") User user,
+                             @PathVariable String songId, Model model) throws JsonProcessingException {
+        System.out.println("songId: " + songId);
+        System.out.println("comment: " + comment.getContent());
+
+        if (comment.getContent() == null || comment.getContent().trim().isEmpty()) {
+            model.addAttribute("error", "댓글 내용을 입력해주세요!");
+            return "song/track";
+        }
+
+        // 댓글 작성
+        Comment newComment = Comment.builder()
+                .userId(user.getId())
+                .songId(songId)
+                .content(comment.getContent())
+                .date(LocalDateTime.now())
+                .build();
+
+        commentRepository.commentCreate(newComment);
+
+        System.out.println("🎯 getComments 도착! songId = " + songId);
+
+        return "redirect:/song/track/" + songId;
+    }
+
+
 
 
 

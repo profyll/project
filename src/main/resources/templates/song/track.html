@@ -90,6 +90,77 @@
     .like-button.liked:hover {
       background-color: #f2a1a1;
     }
+
+
+    #comment-tab {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    #comment-panel {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      transition: right 0.3s ease;
+      z-index: 999;
+    }
+
+    #comment-panel.open {
+      right: 0;
+    }
+
+    .comment-header {
+      font-size: 18px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .comment-item {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+    #comment-tab.hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -109,6 +180,10 @@
     <span class="label">💿 앨범:</span> <span th:text="${album}">앨범 명</span>
   </div>
 
+  <div id="comment-tab" onclick="toggleComments()">
+    💬 댓글
+  </div>
+
   <div th:if="${preview != null}">
     <audio controls>
       <source th:src="${preview}" type="audio/mpeg">
@@ -119,8 +194,51 @@
   <div class="no-preview" th:if="${preview == null}">
     ❌ 미리듣기를 제공하지 않는 곡입니다.
   </div>
+
+  <div id="comment-panel">
+    <div class="comment-header">
+      <strong>댓글</strong>
+      <span onclick="toggleComments()" style="cursor:pointer; float:right;">❌</span>
+    </div>
+
+    <!-- 댓글 목록 -->
+    <div th:each="comment : ${comments}">
+      <div>
+        <div th:if="${error != null}" class="error-message">
+          <p th:text="${error}"></p>
+        </div>
+        <p th:text="${comment.content}"></p>
+        <small th:text="${#temporals.format(comment.date, 'yyyy-MM-dd HH:mm')}"></small>
+      </div>
+    </div>
+
+    <!-- 댓글 입력 폼 -->
+    <form th:action="@{/song/track/{songId}/comment(songId=${songId})}" method="post">
+      <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
+      <button type="submit">등록</button>
+    </form>
+
+  </div>
+
 </div>
 
+<script>
+  function toggleComments() {
+    const panel = document.getElementById('comment-panel');
+    const button = document.getElementById('comment-tab');
 
+    panel.classList.toggle('open');
+
+    if (panel.classList.contains('open')) {
+      button.classList.add('hidden'); // 열릴 때 버튼 숨김
+    } else {
+      button.classList.remove('hidden'); // 닫힐 때 버튼 다시 보임
+    }
+  }
+
+
+
+
+</script>
 </body>
 </html>

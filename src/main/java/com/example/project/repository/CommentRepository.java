@@ -8,6 +8,6 @@ import java.util.List;
 @Mapper
 public interface CommentRepository {
     public int commentCreate(Comment comment);
-    public List<Comment> getCommentsBySongId(int songId);
-    public List<Comment> getCommentsByArtistId(int artistId);
+    public List<Comment> getCommentsBySongId(String songId);
+    public List<Comment> getCommentsByArtistId(String artistId);
 }
