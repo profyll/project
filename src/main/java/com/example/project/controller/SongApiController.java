@@ -1,9 +1,9 @@
 package com.example.project.controller;
 
+import com.example.project.AccessToken;
 import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import lombok.AllArgsConstructor;
-import com.example.project.AccessToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
