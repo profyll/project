@@ -1,4 +1,4 @@
-package com.example.project.Repository;
+package com.example.project.repository;
 
 import com.example.project.entity.User;
 import org.apache.ibatis.annotations.Mapper;

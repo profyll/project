@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${name}">노래 정보</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #fdfbfb, #ebedee);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .track-card {
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 500px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .album-img {
+      border-radius: 8px;
+      margin-bottom: 20px;
+      max-width: 100%;
+    }
+
+    .track-info {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 6px;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .no-preview {
+      color: #888;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    /* 좋아요 버튼 스타일 */
+    .like-button {
+      background-color: #ff4f4f;
+      color: white;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .like-button i {
+      margin-right: 8px;
+    }
+
+    .like-button:hover {
+      background-color: #ff3d3d;
+      transform: scale(1.05);
+    }
+
+    .like-button:active {
+      transform: scale(0.95);
+    }
+
+    /* 좋아요 취소 버튼 */
+    .like-button.liked {
+      background-color: #f2a7a7;
+    }
+
+    .like-button.liked:hover {
+      background-color: #f2a1a1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="track-card">
+  <img class="album-img" th:if="${image != null}" th:src="${image}" alt="앨범 이미지"/>
+
+  <div class="track-info">
+    <span class="label">🎵 제목:</span> <span th:text="${name}">노래 제목</span>
+  </div>
+
+  <div class="track-info">
+    <span class="label">🎤 아티스트:</span> <span th:text="${artist}">가수</span>
+  </div>
+
+  <div class="track-info">
+    <span class="label">💿 앨범:</span> <span th:text="${album}">앨범 명</span>
+  </div>
+
+  <div th:if="${preview != null}">
+    <audio controls>
+      <source th:src="${preview}" type="audio/mpeg">
+      브라우저가 audio 태그를 지원하지 않습니다.
+    </audio>
+  </div>
+
+  <div class="no-preview" th:if="${preview == null}">
+    ❌ 미리듣기를 제공하지 않는 곡입니다.
+  </div>
+</div>
+
+
+</body>
+</html>
