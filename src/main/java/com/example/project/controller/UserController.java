@@ -28,9 +28,15 @@ public class UserController {
         return "user/mypage";
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
+    @GetMapping("/logout")
+    public String logout(@SessionAttribute("user") Optional<User> user, HttpSession session, Model model) {
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            session.invalidate();
+        } else {
+            return "redirect:/index";
+        }
         return "redirect:/index";
     }
 }
+

@@ -1,58 +1,181 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Search Results</title>
     <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 85px;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .navbar div {
+            width: 33.333%;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #1DB954;
+        }
+
+        .nav-center {
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-form {
+            display: flex;
+            background-color: #2c2c2c;
+            border-radius: 30px;
+            padding: 10px 15px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .search-form input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 17px;
+            padding: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        .search-form button {
+            background-color: #1DB954;
+            border: none;
+            color: white;
+            width: 90px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #2c2c2c;
+        }
+
+        .content {
+            margin-top: 90px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         ul {
             list-style: none;
             padding: 0;
-        }
-
-        li {
-            margin-bottom: 10px;
+            width: 100%;
+            max-width: 800px;
         }
 
         .track-item {
+            background-color: #1f1f1f;
+            padding: 16px 24px;
+            border-radius: 10px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px; /* 간격 */
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .track-item form {
             margin: 0;
         }
 
-        button {
-            all: unset;
+        .track-item button {
+            background-color: transparent;
+            border: none;
+            color: #1DB954;
+            font-size: 16px;
             cursor: pointer;
-            color: blue;
+            padding: 0;
             text-decoration: underline;
         }
 
-        button:hover {
-            color: darkblue;
+        .track-item button:hover {
+            color: #1ed760;
+        }
+
+        .separator {
+            color: #888;
+            margin: 0 10px;
         }
     </style>
 </head>
 <body>
-<h2>검색 결과</h2>
-<ul>
-    <li th:each="track : ${tracks}">
-        <div class="track-item">
-            <form th:action="@{/song/track}" method="post">
-                <input type="hidden" name="q" th:value="${track.id}"/>
-                <button type="submit" th:text="${track.name}"></button>
-            </form>
+<div class="navbar">
+    <div class="logo">
+        <a>FROPIFY
+        </a></div>
+    <div class="nav-center">
+        <form th:action="@{/song/search}" method="post" class="search-form">
+            <input type="text" id="q" name="q" placeholder="검색어를 입력하세요." required/>
+            <button type="submit">검색</button>
+        </form>
+    </div>
+    <div class="nav-links">
+        <a href="/home">홈</a>
+        <a href="/user/mypage">마이페이지</a>
+        <a href="/user/logout">로그아웃</a>
+    </div>
+</div>
 
-            <span>-</span>
+<div class="content">
+    <ul>
+        <li th:each="track : ${tracks}">
+            <div class="track-item">
+                <form th:action="@{/song/track}" method="post">
+                    <input type="hidden" name="q" th:value="${track.id}"/>
+                    <button type="submit" th:text="${track.name}"></button>
+                </form>
+                <span class="separator">-</span>
+                <form th:action="@{/song/artist}" method="post">
+                    <input type="hidden" name="q" th:value="${track.artists[0].getId()}"/>
+                    <button type="submit" th:text="${track.artists[0].name}"></button>
+                </form>
+            </div>
+        </li>
+    </ul>
+</div>
 
-            <form th:action="@{/song/artist}" method="post">
-                <input type="hidden" name="q" th:value="${track.artists[0].getId()}"/>
-                <button type="submit" th:text="${track.artists[0].name}"></button>
-            </form>
-
-        </div>
-    </li>
-</ul>
 </body>
 </html>
