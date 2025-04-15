@@ -4,7 +4,42 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    body {
+        background-color: #121212;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .mypage-button {
+        background-color: #1f1f1f;
+        color: #ffffff;
+        border: 1px solid #333;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .mypage-button:hover {
+        background-color: #333333;
+    }
+</style>
 <body>
+<h1>
+    프로피파이
+</h1>
+<p>
+    <a th:href="/mypage">
+        <button class="mypage-button" th:href="">마이페이지</button>
+    </a>
+</p>
 
 </body>
 </html>
