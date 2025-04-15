@@ -165,6 +165,25 @@
             background-color: #3a3a3a;
             transform: translateX(5px);
         }
+        body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        body.scrolling::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body.scrolling::-webkit-scrollbar-thumb {
+            background: #555;  /* 스크롤바 색 */
+            border-radius: 4px;
+        }
+
+        body.scrolling::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        html {
+            overflow-y: scroll;
+        }
     </style>
 </head>
 <body>
@@ -207,5 +226,17 @@
             </ul>
         </div>
     </div>
+<script>
+    let scrollTimeout;
+
+    window.addEventListener('scroll', () => {
+        document.body.classList.add('scrolling');
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            document.body.classList.remove('scrolling');
+        }, 800);
+    });
+</script>
 </body>
 </html>
