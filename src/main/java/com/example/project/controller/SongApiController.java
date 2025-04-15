@@ -46,4 +46,12 @@ public class SongApiController {
             return "error";
         }
     }
+
+    @RequestMapping("/detail")
+    public String songDetailHandle() {
+
+
+    return "song/detail";
+    }
+
 }
