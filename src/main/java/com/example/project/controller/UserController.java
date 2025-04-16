@@ -43,10 +43,10 @@ public class UserController {
         List<Song> likedSongs = userRepository.findLikedSongsByUserId(userId);
         List<SearchHistoryWithSong> rawHistory = searchHistoryRepository.getSearchHistoryWithSongByUserId(userId);
 
-
-
-
-
+        System.out.println("userId = " + userId);
+        for (SearchHistoryWithSong h : rawHistory) {
+            System.out.println(h.getSongName() + " / " + h.getSearchedAt());
+        }
         model.addAttribute("user", user);
         model.addAttribute("likedSongs", likedSongs);
         model.addAttribute("searchHistory", rawHistory);

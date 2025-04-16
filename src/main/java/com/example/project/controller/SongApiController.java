@@ -134,6 +134,7 @@ public class SongApiController {
                         .songName(track.getName())
                         .songId(track.getId())
                         .userId(user.getId())
+                        .image(track.getUri())
                         .build();
 
                 searchHistoryRepository.create(searchHistory);
