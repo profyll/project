@@ -17,19 +17,18 @@
             resultType="com.example.project.vo.SearchHistoryWithSong"
             parameterType="int">
         SELECT
-        sh.song_id,
-        sh.user_id,
-        sh.searched_at,
-        s.song_name,
-        s.image
+        song_id,
+        user_id,
+        searched_at,
+        song_name,
+        image
         FROM
-        search_history sh
-        JOIN
-        song s ON sh.song_id = s.song_id
+        search_history
         WHERE
-        sh.user_id = #{userId}
+        user_id = #{userId}
         ORDER BY
-        sh.searched_at DESC
+        searched_at DESC
     </select>
+
 
 </mapper>
