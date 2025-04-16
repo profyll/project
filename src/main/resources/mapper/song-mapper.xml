@@ -15,10 +15,7 @@
         SELECT * FROM song WHERE song_id = #{songId}
     </select>
 
-    <!-- Song의 liked 상태를 업데이트하는 쿼리 -->
-    <update id="update" parameterType="Song">
-        UPDATE song
-        SET liked = #{liked}
-        WHERE song_id = #{songId}
+    <update id="update" parameterType="map">
+        UPDATE song SET liked = #{liked} WHERE song_id = #{songId}
     </update>
 </mapper>
