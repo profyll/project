@@ -67,6 +67,7 @@
       transition: all 0.3s ease;
       margin-top: 20px;
       font-weight: bold;
+      text-transform: uppercase;
     }
 
     .like-button i {
@@ -90,6 +91,38 @@
     .like-button.liked:hover {
       background-color: #f2a1a1;
     }
+
+    /* 폼 스타일 */
+    form {
+      margin-top: 20px;
+    }
+
+    button[type="submit"] {
+      background-color: #ff4f4f;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      width: 100%; /* 버튼을 카드 너비에 맞춰서 확장 */
+    }
+
+    button[type="submit"]:hover {
+      background-color: #ff3d3d;
+      transform: scale(1.05);
+    }
+
+    button[type="submit"]:active {
+      transform: scale(0.95);
+    }
+
   </style>
 </head>
 <body>
@@ -119,8 +152,16 @@
   <div class="no-preview" th:if="${preview == null}">
     ❌ 미리듣기를 제공하지 않는 곡입니다.
   </div>
-</div>
 
+  <!-- 좋아요 버튼을 카드 안에 배치 -->
+  <form th:action="@{/song/track-update-liked}">
+    <input type="hidden" name="songId" th:value="${songId}" />
+    <input type="hidden" name="liked" th:value="${liked ? 'true' : 'false'}" />
+    <button type="submit">
+      <span th:text="${liked} ? 'Unlike' : 'Like'"></span>
+    </button>
+  </form>
+</div>
 
 </body>
 </html>
