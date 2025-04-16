@@ -13,6 +13,7 @@ public class SearchHistory {
         private int id;
         private String songId;
         private String songName;
+        private int userId;
         private LocalDateTime searchedAt;
     }
 
