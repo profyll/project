@@ -232,11 +232,25 @@
     window.addEventListener('scroll', () => {
         document.body.classList.add('scrolling');
 
+
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
             document.body.classList.remove('scrolling');
         }, 800);
     });
 </script>
+
+<ul th:each="track :${tracks}">
+    <li th:text="${track.name}"></li>
+</ul>
+
+<form th:action="@{/song/artist-update-liked}">
+    <input type="hidden" name="artistId" th:value="${artistId}" />
+    <input type="hidden" name="liked" th:value="${liked}" />
+    <button type="submit">
+        <span th:text="${liked} ? 'Unlike' : 'Like'"></span>
+    </button>
+</form>
+
 </body>
 </html>
