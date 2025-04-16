@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository {
 
     public int create(User user);
+    User findById(int id);
     public User findByEmail(@Param("email") String email);
     public User findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
 }

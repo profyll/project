@@ -125,16 +125,42 @@
     }
 
     .comment-header {
-      font-size: 18px;
-      margin-bottom: 15px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 8px;
     }
 
+    .comment-date {
+      align-self: flex-start;
+    }
     .comment-item {
       margin-bottom: 15px;
       padding-bottom: 10px;
       border-bottom: 1px solid #eee;
+    }
+
+    .comment-nickname {
+      align-self: flex-start;
+      font-weight: bold;
+    }
+
+    .comment-box {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      background-color: #f9f9f9;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .comment-content {
+      text-align: left;
+      font-size: 1em;
+      color: #333;
+      line-height: 1.4;
     }
 
     textarea {
@@ -161,6 +187,8 @@
     #comment-tab.hidden {
       display: none;
     }
+
+
   </style>
 </head>
 <body>
@@ -201,22 +229,28 @@
       <span onclick="toggleComments()" style="cursor:pointer; float:right;">❌</span>
     </div>
 
-    <!-- 댓글 목록 -->
-    <div th:each="comment : ${comments}">
-      <div>
-        <div th:if="${error != null}" class="error-message">
-          <p th:text="${error}"></p>
-        </div>
-        <p th:text="${comment.content}"></p>
-        <small th:text="${#temporals.format(comment.date, 'yyyy-MM-dd HH:mm')}"></small>
-      </div>
+
+    <!-- 에러 메시지 (댓글 작성 폼 위로 이동) -->
+    <div th:if="${error != null}" class="error-message">
+      <p th:text="${error}"></p>
     </div>
 
     <!-- 댓글 입력 폼 -->
-    <form th:action="@{/song/track/{songId}/comment(songId=${songId})}" method="post">
+    <form th:action="@{'/song/track/' + ${songId} + '/comment'}" method="post">
       <textarea name="content" placeholder="댓글을 입력하세요" required></textarea>
       <button type="submit">등록</button>
     </form>
+
+    <!-- 댓글 목록 -->
+    <div th:each="dto : ${comments}">
+      <div class="comment-header">
+        <span class="comment-nickname" th:text="${dto.nickname}">닉네임</span>
+        <span class="comment-date" th:text="${#temporals.format(dto.comment.date, 'yyyy-MM-dd HH:mm')}"></span>
+      </div>
+      <div class="comment-content">
+        <p th:text="${dto.comment.content}">댓글 내용</p>
+      </div>
+    </div>
 
   </div>
 

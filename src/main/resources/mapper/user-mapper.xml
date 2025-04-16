@@ -12,4 +12,7 @@
     <select id="findByProviderAndProviderId" resultType="user">
         select * from users where provider=#{provider} and provider_id=#{providerId}
     </select>
+    <select id="findById" resultType="user" parameterType="int">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
 </mapper>

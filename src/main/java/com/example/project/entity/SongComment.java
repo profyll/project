@@ -2,7 +2,6 @@ package com.example.project.entity;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Setter
@@ -10,11 +9,10 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class SongComment {
     private int id;
     private int userId;
     private String content;
     private LocalDateTime date;
     private String songId;
-    private String artistId;
 }

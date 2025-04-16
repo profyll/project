@@ -91,7 +91,7 @@ public class AuthController {
             session.setAttribute("user", user);
         }
 
-        return "redirect:/index";
+        return "redirect:/home";
     }
 }
 
