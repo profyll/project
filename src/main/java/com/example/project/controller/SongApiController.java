@@ -152,18 +152,24 @@ public class SongApiController {
     }
 
 
-    @GetMapping("/song/track/{songId}/comment")
-    public String getComments(@PathVariable("songId") String songId, Model model) throws JsonProcessingException {
+    @GetMapping("/track/detail")
+    public String getTrack(@RequestParam("songId") String songId, Model model) throws JsonProcessingException {
+        if (songId == null) {
+            return "redirect:/"; // 또는 기본 song 페이지
+        }
+
         List<Comment> comments = commentRepository.getCommentsBySongId(songId);
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", commentRepository.getCommentsBySongId(songId));
         model.addAttribute("songId", songId);
+
         return "song/track";
     }
 
-    @PostMapping("/song/track/{songId}/comment")
-    public String addComment(@ModelAttribute Comment comment,
+
+    @PostMapping("/song/track/{songId}/{comment}")
+    public String addComment(@PathVariable("comment") Comment comment,
                              @SessionAttribute("user") User user,
-                             @PathVariable String songId, Model model) throws JsonProcessingException {
+                             @PathVariable("songId") String songId, Model model) throws JsonProcessingException {
         System.out.println("songId: " + songId);
         System.out.println("comment: " + comment.getContent());
 
@@ -181,11 +187,9 @@ public class SongApiController {
                 .build();
 
         commentRepository.commentCreate(newComment);
-
-        System.out.println("🎯 getComments 도착! songId = " + songId);
-
         return "redirect:/song/track/" + songId;
     }
+
 
 
 

@@ -8,9 +8,9 @@
         VALUES (#{userId}, #{content}, #{date}, #{songId}, #{artistId})
     </insert>
     <select id="getCommentsBySongId" resultType="comment">
-        select * from comment where song_id = #{songId} order by wrote_at desc
+        select * from comment where song_id = #{songId} order by id desc
     </select>
     <select id="getCommentsByArtistId" resultType="comment">
-        select * from comment where artist_id = #{artist_id} order by wrote_at desc
+        select * from comment where artist_id = #{artist_id} order by id desc
     </select>
     </mapper>

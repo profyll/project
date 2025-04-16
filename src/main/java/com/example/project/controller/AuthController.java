@@ -65,7 +65,7 @@ public class AuthController {
             userRepository.create(user);
             user.setProvider("LOCAL");
         }
-        return "redirect:/index";
+        return "redirect:/home";
     }
     @GetMapping("/kakao/callback")
     public String kakaoCallbackHandle(@RequestParam("code") String code,
