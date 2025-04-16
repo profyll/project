@@ -149,11 +149,12 @@ public class SongApiController {
             SearchHistory searchHistory = SearchHistory.builder()
                     .songName(track.getName())
                     .songId(track.getId())
+                    .userId(user.getId())
                     .build();
 
             searchHistoryRepository.create(searchHistory);
 
-            com.example.project.entity.Song existing = songRepository.findBySongId(trackId);
+            com.example.project.entity.Song existing = songRepository.findBySongIdAndUserId(trackId, user.getId());
             boolean liked = existing != null && existing.isLiked();
 
             model.addAttribute("comments", commentWithNicknames);
@@ -188,7 +189,7 @@ public class SongApiController {
 
             if (existing != null) {
                 // ✅ userId 기준으로 업데이트
-                songRepository.update(artistId, userId, !liked);
+                artistRepository.update(artistId, userId, !liked);
             } else {
                 String token = AccessToken.CreateToken.accesstoken();
 

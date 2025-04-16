@@ -22,4 +22,8 @@
         SELECT * FROM song
         WHERE song_id = #{songId} AND user_id = #{userId}
     </select>
+    <select id="findByLikedSongByUserId" parameterType="map" resultType="Song">
+        SELECT
+        s.* FROM song s WHERE s.user_id = #{userId} AND s.liked = true
+    </select>
 </mapper>
