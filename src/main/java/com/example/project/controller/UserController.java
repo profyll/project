@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
@@ -37,14 +41,19 @@ public class UserController {
         int userId = user.getId();
 
         List<Song> likedSongs = userRepository.findLikedSongsByUserId(userId);
-        List<SearchHistoryWithSong> searchHistory = searchHistoryRepository.getSearchHistoryWithSongByUserId(userId);
+        List<SearchHistoryWithSong> rawHistory = searchHistoryRepository.getSearchHistoryWithSongByUserId(userId);
+
+
+
+
 
         model.addAttribute("user", user);
         model.addAttribute("likedSongs", likedSongs);
-        model.addAttribute("searchHistory", searchHistory);
+        model.addAttribute("searchHistory", rawHistory);
 
         return "user/mypage";
     }
+
 
 
 

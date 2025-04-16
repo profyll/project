@@ -12,6 +12,7 @@ import com.example.project.repository.SearchHistoryRepository;
 import com.example.project.repository.SongRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.vo.CommentWithNickname;
+import com.example.project.vo.SearchHistoryWithSong;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
@@ -47,13 +48,14 @@ public class SongApiController {
 
 
     @GetMapping("/search")
-    public String search(@RequestParam(value = "q", required = false) String q, Model model) {
+    public String search(@RequestParam(value = "q", required = false) String q,
+                         @SessionAttribute(name = "user", required = false) User user,
+                         Model model) {
         if (q == null || q.isBlank()) {
             return "song/search";
         }
 
         try {
-
             String token = AccessToken.CreateToken.accesstoken();
 
             SpotifyApi api = new SpotifyApi.Builder()
@@ -63,6 +65,7 @@ public class SongApiController {
             SearchTracksRequest searchRequest = api.searchTracks(q).limit(10).build();
             Track[] tracks = searchRequest.execute().getItems();
 
+
             model.addAttribute("tracks", Arrays.asList(tracks));
             return "song/result";
 
@@ -71,6 +74,8 @@ public class SongApiController {
             return "error";
         }
     }
+
+
 
     @GetMapping("/artist")
     public String artist(@RequestParam("q") String artistId, Model model) {
@@ -108,7 +113,7 @@ public class SongApiController {
     }
 
     @GetMapping("/track")
-    public String track(@RequestParam("q") String trackId, Model model) {
+    public String track(@RequestParam("q") String trackId, Model model, @SessionAttribute("user") User user) {
         try {
             String token = AccessToken.CreateToken.accesstoken();
 
@@ -118,6 +123,23 @@ public class SongApiController {
 
             GetTrackRequest getTrackRequest = api.getTrack(trackId).build();
             Track track = getTrackRequest.execute();
+
+            // ✅ 중복 체크
+            List<SearchHistoryWithSong> recent = searchHistoryRepository.getSearchHistoryWithSongByUserId(user.getId());
+            boolean alreadySearched = recent.stream()
+                    .anyMatch(h -> h.getSongId().equals(track.getId()));
+
+            if (!alreadySearched) {
+                SearchHistory searchHistory = SearchHistory.builder()
+                        .songName(track.getName())
+                        .songId(track.getId())
+                        .userId(user.getId())
+                        .build();
+
+                searchHistoryRepository.create(searchHistory);
+            }
+
+
 
             Song song = Song.builder()
                     .songName(track.getName())
@@ -135,22 +157,14 @@ public class SongApiController {
             List<CommentWithNickname> commentWithNicknames = new ArrayList<>();
 
             for (SongComment comment : comments) {
-                User user = userRepository.findById(comment.getUserId());
+                User user1 = userRepository.findById(comment.getUserId());
                 CommentWithNickname dto = new CommentWithNickname();
                 dto.setComment(comment);
-                dto.setNickname(user != null ? user.getNickname() : "탈퇴한 유저"); // null 방지!
+                dto.setNickname(user1 != null ? user.getNickname() : "탈퇴한 유저"); // null 방지!
                 commentWithNicknames.add(dto);
             }
 
-
-            SearchHistory searchHistory = SearchHistory.builder()
-                    .songName(track.getName())
-                    .songId(track.getId())
-                    .build();
-
-            searchHistoryRepository.create(searchHistory);
-
-            com.example.project.entity.Song existing = songRepository.findBySongId(trackId);
+            com.example.project.entity.Song existing = songRepository.findBySongIdAndUserId(trackId,user.getId());
             boolean liked = existing != null && existing.isLiked();
 
             model.addAttribute("comments", commentWithNicknames);

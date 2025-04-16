@@ -30,7 +30,6 @@
         sh.user_id = #{userId}
         ORDER BY
         sh.searched_at DESC
-        LIMIT 10
     </select>
 
 </mapper>
