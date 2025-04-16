@@ -4,7 +4,33 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.project.repository.SearchHistoryRepository">
     <insert id="create">
-        INSERT INTO search_history (song_id, song_name, searched_at)
-        VALUES (#{songId}, #{songName}, NOW())
+        INSERT INTO search_history (song_id, song_name, searched_at, user_id)
+        VALUES (#{songId}, #{songName}, NOW(), #{userId})
     </insert>
+    <select id="findRecentSearchesByUserId" resultType="searchHistory" parameterType="int">
+        SELECT * FROM search_history
+        WHERE user_id = #{userId}
+        ORDER BY searched_at DESC
+        LIMIT 10
+    </select>
+    <select id="getSearchHistoryWithSongByUserId"
+            resultType="com.example.project.vo.SearchHistoryWithSong"
+            parameterType="int">
+        SELECT
+        sh.song_id,
+        sh.user_id,
+        sh.searched_at,
+        s.song_name,
+        s.image
+        FROM
+        search_history sh
+        JOIN
+        song s ON sh.song_id = s.song_id
+        WHERE
+        sh.user_id = #{userId}
+        ORDER BY
+        sh.searched_at DESC
+        LIMIT 10
+    </select>
+
 </mapper>

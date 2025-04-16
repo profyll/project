@@ -53,6 +53,7 @@ public class SongApiController {
         }
 
         try {
+
             String token = AccessToken.CreateToken.accesstoken();
 
             SpotifyApi api = new SpotifyApi.Builder()

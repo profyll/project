@@ -15,6 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 @Slf4j
 @Controller
 @RequestMapping("/auth")
@@ -28,7 +31,7 @@ public class AuthController {
         // log.info("loginHandle...executed");
 
         model.addAttribute("kakaoClientId", "4704839b7ddb306761fe09edcb6e8998");
-        model.addAttribute("kakaoRedirectUri", "http://192.168.10.21:8080/auth/kakao/callback");
+        model.addAttribute("kakaoRedirectUri", "http://192.168.10.175:8080/auth/kakao/callback");
 
         return "auth/login";
     }
@@ -53,8 +56,13 @@ public class AuthController {
     @GetMapping("/signup")
     public String signupGetHandle(Model model) {
         model.addAttribute("kakaoClientId", "4704839b7ddb306761fe09edcb6e8998");
-        model.addAttribute("kakaoRedirectUri", "http://192.168.10.21:8080/auth/kakao/callback");
-
+        try {
+            String currentIp = InetAddress.getLocalHost().getHostAddress();
+            model.addAttribute("kakaoRedirectUri", "http://" + currentIp + ":8080/auth/kakao/callback");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            model.addAttribute("kakaoRedirectUri", "http://localhost:8080/auth/kakao/callback"); // fallback
+        }
         return "auth/signup";
     }
 
@@ -71,9 +79,11 @@ public class AuthController {
     public String kakaoCallbackHandle(@RequestParam("code") String code,
                                       HttpSession session
     ) throws JsonProcessingException {
-        // log.info("code = {}", code);
+
+        log.info("💥 콜백 도착! 받은 인가코드: {}", code);
+
         KakaoTokenResponse response = kakaoApiService.exchangeToken(code);
-        log.info("response.idToken = {}", response.getIdToken());
+        log.info("response = {}", response);
 
         DecodedJWT decodedJWT = JWT.decode(response.getIdToken());
         String sub = decodedJWT.getClaim("sub").asString();
@@ -82,14 +92,24 @@ public class AuthController {
 
         User found = userRepository.findByProviderAndProviderId("KAKAO", sub);
         log.info("found = {}", found);
+
         if (found != null) {
             session.setAttribute("user", found);
         } else {
-            User user = User.builder().provider("KAKAO")
-                    .providerId(sub).nickname(nickname).picture(picture).build();
-            userRepository.create(user);
-            session.setAttribute("user", user);
+            User user = User.builder()
+                    .provider("KAKAO")
+                    .providerId(sub)
+                    .nickname(nickname)
+                    .picture(picture)
+                    .build();
+
+            userRepository.create(user);  // DB에 INSERT
+
+            User savedUser = userRepository.findByProviderAndProviderId("KAKAO", sub);
+            session.setAttribute("user", savedUser);
+
         }
+
 
         return "redirect:/home";
     }

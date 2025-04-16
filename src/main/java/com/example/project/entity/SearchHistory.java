@@ -14,5 +14,6 @@ public class SearchHistory {
         private String songId;
         private String songName;
         private LocalDateTime searchedAt;
+        private int userId;
     }
 
