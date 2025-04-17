@@ -15,9 +15,11 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -231,12 +233,6 @@ public class UserController {
         return result;
     }
 
-
-
-
-
-
-
     @GetMapping("/logout")
     public String logout(@SessionAttribute("user") Optional<User> user, HttpSession session, Model model) {
         if (user.isPresent()) {
@@ -246,6 +242,21 @@ public class UserController {
             return "redirect:/index";
         }
         return "redirect:/index";
+    }
+
+    @GetMapping("/liked")
+    public String likedHandle(@SessionAttribute("user") Optional<User> user, Model model){
+
+        if (user.isPresent()){
+            List<Song> songs = songRepository.findByLikedSongByUserId(user.get().getId());
+            model.addAttribute("likeSong", songs);
+
+            List<Artist> artists = artistRepository.findByLikedArtistByUserId(user.get().getId());
+            model.addAttribute("likeArtist", artists);
+        }else {
+            return "redirect:/index";
+        }
+        return "user/liked";
     }
 }
 
