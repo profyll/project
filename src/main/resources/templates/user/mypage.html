@@ -30,42 +30,19 @@
             font-weight: bold;
             color: #1DB954;
         }
+
         .logo a {
             color: #1DB954;
             text-decoration: none;
-            cursor: pointer;
-            display: inline;
         }
 
-
-        .search-form {
-            display: flex;
-            background-color: #2c2c2c;
-            border-radius: 30px;
-            padding: 10px 15px;
-            align-items: center;
-            width: 400px;
-        }
-
-        .search-form input {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 17px;
-            padding: 8px;
-            width: 100%;
-            outline: none;
-        }
-
-        .search-form button {
-            background-color: #B0B0B0; /* 회색으로 변경 */
-            border: none;
-            color: white;
-            width: 90px;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 15px;
+        /* 여기에 변경된 스타일 추가 */
+        .nav-links a,
+        .slider-item a {
+            color: inherit; /* 부모의 텍스트 색상 그대로 사용 */
+            text-decoration: none; /* 밑줄 제거 */
+            cursor: default; /* 클릭 불가능 */
+            font-size: inherit; /* 부모의 폰트 크기 상속 */
         }
 
         .nav-links {
@@ -75,8 +52,6 @@
         }
 
         .nav-links a {
-            color: white;
-            text-decoration: none;
             font-size: 17px;
             padding: 8px 14px;
             border-radius: 6px;
@@ -84,7 +59,7 @@
         }
 
         .nav-links a:hover {
-            background-color: #2c2c2c;
+            background-color: transparent; /* hover 시 배경 색상 제거 */
         }
 
         .content {
@@ -102,13 +77,9 @@
             width: 100%;
             max-width: 900px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .section {
-            width: 100%;
             margin-top: 30px;
         }
 
@@ -120,13 +91,11 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
         }
 
         .slider-wrapper {
             display: flex;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.5s ease;
         }
 
         .slider-item {
@@ -135,10 +104,9 @@
             padding: 15px;
             text-align: center;
             width: 150px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
             flex: 0 0 auto;
             margin-right: 20px;
-            transition: transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
         }
 
         .slider-item img {
@@ -155,49 +123,59 @@
             color: #eee;
         }
 
-        .slider-buttons {
-            display: none; /* 화살표 제거 */
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            transition: background-color 0.3s;
         }
 
-        /* 최근 검색 기록 영역에만 가로 스크롤바 추가 */
-        .search-history .slider-container {
-            overflow-x: auto;
-            white-space: nowrap;
-            padding-bottom: 10px; /* 하단 여백 추가 */
+        .arrow-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .search-history .slider-wrapper {
-            display: inline-flex;
+        .arrow-btn-left {
+            left: 10px;
         }
 
-        .search-history .slider-item {
-            display: inline-block;
-            margin-right: 20px;
+        .arrow-btn-right {
+            right: 10px;
+        }
+        /* 하이퍼링크 스타일을 일반 글자처럼 보이게 수정 */
+        a {
+            color: inherit; /* 부모의 색상 상속 */
+            text-decoration: none; /* 밑줄 제거 */
+            cursor: default; /* 클릭 불가능 */
         }
 
-        /* 스크롤바 스타일 */
-        .search-history .slider-container::-webkit-scrollbar {
-            height: 8px;
+        /* 네비게이션 링크에 적용된 스타일 */
+        .nav-links a {
+            font-size: 17px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            cursor: default; /* 클릭 불가능 */
         }
 
-        .search-history .slider-container::-webkit-scrollbar-track {
-            background: #2c2c2c;
-            border-radius: 10px;
+        .nav-links a:hover {
+            background-color: transparent; /* hover 시 배경 색상 제거 */
         }
 
-        .search-history .slider-container::-webkit-scrollbar-thumb {
-            background: #B0B0B0; /* 회색으로 변경 */
-            border-radius: 10px;
+        /* 슬라이드 항목 내 하이퍼링크에 적용된 스타일 */
+        .slider-item a {
+            color: inherit; /* 부모의 색상 상속 */
+            text-decoration: none; /* 밑줄 제거 */
+            cursor: default; /* 클릭 불가능 */
         }
 
-        .search-history .slider-container::-webkit-scrollbar-thumb:hover {
-            background: #9a9a9a;
-        }
-
-        /* 좋아요한 트랙, 아티스트에 스크롤바 없애기 */
-        .liked-songs .slider-container, .liked-artists .slider-container {
-            overflow: hidden;
-        }
 
     </style>
 </head>
@@ -207,12 +185,6 @@
     <div class="logo">
         <a href="/home">FROPIFY</a>
     </div>
-
-    <form th:action="@{/song/search}" class="search-form">
-        <input type="text" id="q" name="q" placeholder="검색어를 입력하세요." required />
-        <button type="submit">검색</button>
-    </form>
-
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>
@@ -228,34 +200,38 @@
         <!-- 좋아요한 노래 -->
         <div class="section liked-songs">
             <a th:href="@{/user/liked}">
-            <h3>❤️ 좋아요한 노래</h3>
+                <h3>❤️ 좋아요한 노래</h3>
             </a>
             <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'liked-songs-slider')">‹</button>
                 <div class="slider-wrapper" id="liked-songs-slider">
                     <div class="slider-item" th:each="one, iterStat : ${liked}" th:if="${iterStat.index < 5}">
-                        <a th:href="@{/song/track(q=${one.songId})}">
+                        <a th:href="@{'/song/track?q=' + ${one.songId}}">
                             <img th:src="${one.image}" alt="cover"/>
+                            <p th:text="${one.songName}">곡 제목</p>
                         </a>
-                        <p th:text="${one.songName}">곡 제목</p>
                     </div>
                 </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'liked-songs-slider')">›</button>
             </div>
         </div>
 
         <!-- 좋아요한 가수 -->
         <div class="section liked-artists">
             <a th:href="@{/user/liked}">
-            <h3>❤️ 좋아요한 가수</h3>
+                <h3>❤️ 좋아요한 가수</h3>
             </a>
             <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'liked-artists-slider')">‹</button>
                 <div class="slider-wrapper" id="liked-artists-slider">
                     <div class="slider-item" th:each="one, iterStat : ${likedA}" th:if="${iterStat.index < 5}">
                         <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
                             <img th:src="${one.image}" alt="artist"/>
+                            <p th:text="${one.artistName}">가수 이름</p>
                         </a>
-                        <p th:text="${one.artistName}">가수 이름</p>
                     </div>
                 </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'liked-artists-slider')">›</button>
             </div>
         </div>
 
@@ -263,6 +239,7 @@
         <div class="section search-history">
             <h3>🔍 최근 검색 기록</h3>
             <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'search-history-slider')">‹</button>
                 <div class="slider-wrapper" id="search-history-slider">
                     <div class="slider-item" th:each="history, iterStat : ${searchHistory}" th:if="${iterStat.index < 5}">
                         <a th:href="@{'/song/track?q=' + ${history.songId}}">
@@ -271,37 +248,34 @@
                         <p th:text="${history.songName}">곡 제목</p>
                     </div>
                 </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'search-history-slider')">›</button>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
-    // 슬라이드 제어 (최근 검색 기록에 대해서만 동작)
-    function slide(direction, sliderId, wrapperId) {
-        const slider = document.getElementById(sliderId);
-        const wrapper = document.getElementById(wrapperId);
-        const items = wrapper.getElementsByClassName('slider-item');
-        const totalItems = items.length;
+    const sliderState = {};
 
-        const itemWidth = items[0].offsetWidth + 20; // 각 아이템의 폭 + 간격
-        const currentTransform = parseFloat(slider.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+    function slide(direction, sliderId) {
+        const wrapper = document.getElementById(sliderId);
+        const item = wrapper.querySelector('.slider-item');
+        if (!item) return;
 
-        let newTransform = currentTransform + direction * itemWidth;
-        if (newTransform > 0) newTransform = -(totalItems - 3) * itemWidth; // 넘기면 마지막으로
-        if (newTransform < -(totalItems - 3) * itemWidth) newTransform = 0; // 넘기면 처음으로
+        const itemWidth = item.offsetWidth + 20;
+        const visibleCount = Math.floor(wrapper.parentElement.offsetWidth / itemWidth);
+        const totalItems = wrapper.children.length;
+        const maxOffset = Math.max(0, totalItems - visibleCount);
 
-        slider.style.transform = `translateX(${newTransform}px)`;
+        if (!sliderState[sliderId]) sliderState[sliderId] = 0;
+        sliderState[sliderId] += direction;
+
+        if (sliderState[sliderId] < 0) sliderState[sliderId] = 0;
+        if (sliderState[sliderId] > maxOffset) sliderState[sliderId] = maxOffset;
+
+        const offsetX = -(itemWidth * sliderState[sliderId]);
+        wrapper.style.transform = `translateX(${offsetX}px)`;
     }
-
-    document.getElementById("prev-btn-history").addEventListener("click", function() {
-        slide(1, "search-history-slider", "search-history-slider");
-    });
-
-    document.getElementById("next-btn-history").addEventListener("click", function() {
-        slide(-1, "search-history-slider", "search-history-slider");
-    });
 </script>
 
 </body>
