@@ -175,6 +175,25 @@
 <div class="content">
     <div class="user-card">
         <h1>마이페이지</h1>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <!-- 프로필 이미지 -->
+            <img id="profileImage"
+                 th:src="${user.image}"
+                 alt="profile image"
+                 style="width: 120px; border-radius: 50%; margin-bottom: 10px;"
+                 onerror="this.src='/icons/profile.png';" />
+
+            <!-- 정보수정 링크 -->
+            <div style="margin-top: 20px;">
+                <a th:href="@{/user/edit}" style="color: #007bff; text-decoration: none; font-weight: bold;">
+                    정보수정 하러 가기
+                </a>
+            </div>
+        </div>
+
+
+
         <h3 th:text="${user.nickname}">닉네임</h3>
 
         <!-- 좋아요한 노래 -->
@@ -242,20 +261,7 @@
         const item = wrapper.querySelector('.slider-item');
         if (!item) return;
 
-        const itemWidth = item.offsetWidth + 20;
-        const visibleCount = Math.floor(wrapper.parentElement.offsetWidth / itemWidth);
-        const totalItems = wrapper.children.length;
-        const maxOffset = Math.max(0, totalItems - visibleCount);
 
-        if (!sliderState[sliderId]) sliderState[sliderId] = 0;
-        sliderState[sliderId] += direction;
-
-        if (sliderState[sliderId] < 0) sliderState[sliderId] = 0;
-        if (sliderState[sliderId] > maxOffset) sliderState[sliderId] = maxOffset;
-
-        const offsetX = -(itemWidth * sliderState[sliderId]);
-        wrapper.style.transform = `translateX(${offsetX}px)`;
-    }
 </script>
 
 </body>

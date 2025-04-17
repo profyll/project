@@ -29,5 +29,13 @@
         WHERE id = #{id}
     </update>
 
-
+    <update id="updateUserInfo" parameterType="map">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        email = #{email},
+        gender = #{gender},
+        password = #{password}
+        WHERE id = #{id}
+    </update>
 </mapper>
