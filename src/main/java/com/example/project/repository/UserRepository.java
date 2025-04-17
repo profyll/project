@@ -19,6 +19,12 @@ public interface UserRepository {
     public User findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
     List<Song> findLikedSongsByUserId(@Param("userId") int userId);
     public int updateImage(@Param("id") int id, @Param("image") String image);
-
+    int updateUserInfo(
+            @Param("id") int id,
+            @Param("nickname") String nickname,
+            @Param("email") String email,
+            @Param("gender") String gender,
+            @Param("password") String password
+    );
 
 }

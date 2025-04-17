@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,47 +73,127 @@ public class UserController {
         return "user/mypage";
     }
 
+    @GetMapping("/edit")
+    public String editProfilePage(HttpSession session, Model model) {
+        User sessionUser = (User) session.getAttribute("user");
+
+        if (sessionUser != null) {
+            User freshUser = userRepository.findById(sessionUser.getId());
+            model.addAttribute("user", freshUser);
+            session.setAttribute("user", freshUser);
+        } else {
+            // 로그인 안 했으면 무조건 인덱스 페이지로 리다이렉트
+            return "redirect:/index";
+        }
+
+        return "user/edit";
+    }
+
+
+
+
+    @PostMapping("/edit/go")
+    public String updateUserInfo(@RequestParam String name,
+                                 @RequestParam(required = false) String email,
+                                 @RequestParam(required = false) String gender,
+                                 @RequestParam(required = false) String password,
+                                 HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user != null) {
+            if (email != null && email.trim().isEmpty()) {
+                email = null;
+            }
+
+            userRepository.updateUserInfo(
+                    user.getId(),
+                    name,
+                    email,
+                    gender,
+                    password
+            );
+
+            // 세션 정보도 업데이트
+            user.setNickname(name);
+            user.setEmail(email);
+            user.setGender(gender);
+            if (password != null && !password.isEmpty()) {
+                user.setPassword(password);
+            }
+
+            session.setAttribute("user", user);
+        }
+
+        return "redirect:/user/mypage";
+    }
+
+
+
+
+
+
 
 
 
     @PostMapping("/mypage/upload-image")
     @ResponseBody
-    public Map<String, String> uploadProfileImage(@SessionAttribute("user") Optional<User> user,
-                                                  @RequestParam("image") MultipartFile imageFile) throws IOException {
+    public Map<String, String> uploadProfileImage(
+            @SessionAttribute("user") Optional<User> user,
+            @RequestParam("image") MultipartFile imageFile) {
+
         Map<String, String> result = new HashMap<>();
 
-        if (user.isEmpty() || imageFile.isEmpty()) {
-            result.put("error", "사용자 또는 이미지 없음");
+        try {
+            if (user.isEmpty() || imageFile.isEmpty()) {
+                result.put("error", "사용자 또는 이미지 없음");
+                return result;
+            }
+
+            User u = user.get();
+
+            // 기존 이미지 삭제 (기본 이미지 제외)
+            String currentImage = u.getImage();
+            if (currentImage != null && currentImage.startsWith("/uploads/")) {
+                Path oldImagePath = Paths.get("src/main/resources/static" + currentImage);
+                Files.deleteIfExists(oldImagePath);
+            }
+
+            // 확장자 추출
+            String originalFilename = imageFile.getOriginalFilename();
+            String extension = "";
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            }
+
+            if (!extension.matches("\\.(jpg|jpeg|png|gif|webp)")) {
+                result.put("error", "지원하지 않는 이미지 형식입니다.");
+                return result;
+            }
+
+            // 새 파일 이름 생성
+            String fileName = "user_" + u.getId() + "_" + UUID.randomUUID() + extension;
+            Path uploadPath = Paths.get("src/main/resources/static/uploads/" + fileName);
+            Files.createDirectories(uploadPath.getParent());
+            Files.write(uploadPath, imageFile.getBytes());
+
+            String imageUrl = "/uploads/" + fileName;
+
+            // DB 반영
+            u.setImage(imageUrl);
+            userRepository.updateImage(u.getId(), imageUrl);
+
+            result.put("imageUrl", imageUrl);
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("error", "이미지 업로드 실패: " + e.getMessage());
             return result;
         }
-
-        User u = user.get();
-
-        // 기본 이미지 경로는 삭제 금지
-        String currentImage = u.getImage();
-        if (currentImage != null && currentImage.startsWith("/uploads/")) {
-            Path oldImagePath = Paths.get("src/main/resources/static" + currentImage);
-            Files.deleteIfExists(oldImagePath);
-        }
-
-        // 새 이미지 저장
-        String fileName = "user_" + u.getId() + "_" + UUID.randomUUID() + ".jpg";
-        Path uploadPath = Paths.get("src/main/resources/static/uploads/" + fileName);
-        Files.createDirectories(uploadPath.getParent());
-        Files.write(uploadPath, imageFile.getBytes());
-        System.out.println("업로드 경로: " + uploadPath.toAbsolutePath());
-
-
-        // DB 업데이트
-        String imageUrl = "/uploads/" + fileName;
-        u.setImage(imageUrl);
-        userRepository.updateImage(u.getId(), imageUrl);
-
-        System.out.println("리턴할 이미지 경로: " + imageUrl);
-
-        result.put("imageUrl", imageUrl); // 프론트에서 이걸로 갱신
-        return result;
     }
+
 
 
 

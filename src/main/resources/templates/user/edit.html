@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>profify edit</title>
+
+
+  <style>
+    /* 전체 폰트 및 배경 스타일 */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+
+    h1, h2, h3, h4 {
+      color: #fff;
+    }
+
+    /* 폼 전체 스타일 */
+    form#editForm {
+      max-width: 400px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #ccc;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: #fff;
+    }
+
+    select {
+      background-color: #2a2a2a;
+      color: #fff; /* 글자 흰색으로 */
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    /* 🔽 이건 일부 브라우저에서만 적용될 수 있음 */
+    option {
+      background-color: #2a2a2a;
+      color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #1db954;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1ed760;
+    }
+
+    #profileImage {
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+
+    #profileImage:hover {
+      transform: scale(1.05);
+    }
+
+    #imagePlaceholder {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    #statusMessage {
+      color: #ccc;
+      font-style: italic;
+    }
+
+    /* ✅ 프로필 이미지 버튼들 스타일 */
+    .image-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    /* 이미지 변경 버튼 - 메인 초록 */
+    .image-buttons .primary-btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      border-radius: 6px;
+      background-color: #1db954;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: auto; /* 👈 이걸로 너비 줄이기 */
+      min-width: 120px; /* 👈 버튼이 너무 작아지지 않게 최소 너비 */
+    }
+
+    .image-buttons .primary-btn:hover {
+      background-color: #1ed760;
+    }
+
+    /* 기본 이미지로 - 작고 흐릿한 느낌 */
+    .image-buttons .subtle-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      color: #aaa;
+      background-color: transparent;
+      border: 1px solid #3a3a3a;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      width: auto; /* 👈 이것도 auto로 */
+      min-width: 100px;
+    }
+
+    .image-buttons .subtle-btn:hover {
+      background-color: #2a2a2a;
+      color: #fff;
+    }
+
+
+  </style>
+
+
+</head>
+<body>
+<!-- 🔵 전체 정보 수정 폼 -->
+<form id="editForm" th:action="@{/user/edit/go}" method="post" enctype="multipart/form-data">
+
+
+  <!-- 🔵 프로필 이미지 섹션 -->
+  <div style="text-align: center; margin-bottom: 30px;">
+    <div id="imagePlaceholder">이미지 불러오는 중...</div>
+
+    <img id="profileImage"
+         th:src="${user.image != null and user.image != '' and user.image != 'profile.png' ? user.image : '/icons/profile.png'}"
+         alt="profile image"
+         style="width: 150px; border-radius: 50%; display: block; margin: 0 auto 10px;"
+         onerror="this.src='/icons/profile.png';" />
+
+
+    <div class="image-buttons">
+      <button type="button" class="primary-btn" onclick="document.getElementById('imageInput').click();">이미지 변경</button>
+      <button type="button" class="subtle-btn" onclick="resetToDefault()">기본 이미지로</button>
+    </div>
+
+
+  </div>
+
+
+  <form th:action="@{/user/edit/go}" method="post">
+    <!-- 🔵 사용자 정보 수정 -->
+    <div style="max-width: 300px; margin: 0 auto;">
+
+      <label for="name">닉네임</label>
+      <input type="text" id="name" name="name" th:value="${user.nickname}" required style="width: 100%; margin-bottom: 10px;" />
+
+      <label for="email">이메일 (선택)</label>
+      <input type="email" id="email" name="email"
+             th:value="${user.email}" placeholder="입력하지 않아도 됩니다"
+             style="width: 100%; margin-bottom: 10px;" />
+
+      <!-- 🔒 비밀번호 변경 (카카오 로그인 사용자는 숨김) -->
+      <div th:if="${user.provider != 'KAKAO'}">
+        <label for="currentPassword">현재 비밀번호</label>
+        <input type="password" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호 입력"
+               style="width: 100%; margin-bottom: 10px;" />
+
+        <!-- 새 비밀번호 입력 영역 -->
+        <label for="newPassword">새 비밀번호</label>
+        <input type="password" id="newPassword" name="newPassword" placeholder="변경할 비밀번호 입력"
+               style="width: 100%; margin-bottom: 10px;" />
+      </div>
+
+      <label for="gender">성별</label>
+      <select id="gender" name="gender" style="width: 100%; margin-bottom: 10px;">
+        <option th:selected="${user.gender == null}" value="">선택 안 함</option>
+        <option th:selected="${user.gender == '남성'}" value="남성">남성</option>
+        <option th:selected="${user.gender == '여성'}" value="여성">여성</option>
+      </select>
+
+      <div id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 15px;"></div>
+      <button type="submit" style="width: 100%;">정보 수정</button>
+    </div>
+  </form>
+
+
+
+
+
+
+
+  <script th:inline="javascript">
+  const profileImage = document.getElementById('profileImage');
+  const placeholder = document.getElementById('imagePlaceholder');
+  const imageInput = document.getElementById('imageInput');
+  const deleteForm = document.getElementById('deleteForm');
+  const statusMessage = document.getElementById('statusMessage');
+
+  const imageUrl = /*[[${user.image}]]*/ '/icons/profile.png';
+  const defaultImage = '/icons/profile.png';
+
+  function showStatus(msg, duration = 2000) {
+    if (!statusMessage) return;
+    statusMessage.textContent = msg;
+    statusMessage.style.display = 'block';
+    if (duration > 0) {
+      setTimeout(() => statusMessage.style.display = 'none', duration);
+    }
+  }
+
+  function loadImage(url, loadingMsg = "이미지 불러오는 중...") {
+    if (!profileImage || !placeholder) return;
+    placeholder.textContent = loadingMsg;
+    placeholder.style.display = 'block';
+    profileImage.style.display = 'none';
+
+    profileImage.onload = () => {
+      placeholder.style.display = 'none';
+      profileImage.style.display = 'block';
+    };
+    profileImage.onerror = () => {
+      profileImage.src = defaultImage;
+    };
+    profileImage.src = url + '?t=' + Date.now(); // 캐시 방지
+  }
+
+  // 🔥 이 함수는 DOMContentLoaded 바깥에 있어야 함
+  function resetToDefault() {
+    showStatus("기본 이미지로 변경 중...");
+
+    fetch('/user/mypage/delete-image', {
+      method: 'POST'
+    })
+            .then(response => {
+              if (!response.ok) throw new Error("서버 응답 오류");
+              return response.json();
+            })
+            .then(data => {
+              if (!data.imageUrl) throw new Error("imageUrl 누락");
+              loadImage(data.imageUrl, "기본 이미지 적용 중...");
+              showStatus("✅ 기본 이미지로 변경되었습니다.");
+            })
+            .catch(err => {
+              console.error("기본 이미지 복원 실패:", err);
+              showStatus("❌ 기본 이미지 복원 실패", 3000);
+            });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (profileImage) loadImage(imageUrl);
+
+    if (imageInput) {
+      imageInput.addEventListener('change', () => {
+        const file = imageInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        showStatus("이미지 변경 중...");
+        loadImage(defaultImage, "변경된 이미지 적용 중...");
+
+        fetch('/user/mypage/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+                .then(response => {
+                  if (!response.ok) throw new Error("서버 응답 오류");
+                  return response.json();
+                })
+                .then(data => {
+                  if (!data.imageUrl) throw new Error("imageUrl 누락");
+                  loadImage(data.imageUrl, "변경된 이미지 적용 중...");
+                  showStatus("✅ 이미지 변경 완료!");
+                })
+                .catch(err => {
+                  console.error("업로드 오류:", err);
+                  showStatus("❌ 이미지 업로드 실패", 3000);
+                });
+      });
+    }
+
+    // hidden input 동적 추가
+    if (!document.getElementById('resetImage')) {
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'resetImage';
+      hiddenInput.id = 'resetImage';
+      hiddenInput.value = 'true';
+      const editForm = document.getElementById('editForm');
+      if (editForm) editForm.appendChild(hiddenInput);
+    }
+
+    // 기본 이미지로 리셋 (submit 방식)
+    if (deleteForm) {
+      deleteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        showStatus("기본 이미지로 변경 중...");
+        loadImage(defaultImage);
+
+        fetch('/user/mypage/delete-image', { method: 'POST' })
+                .then(res => res.ok ? res.json() : Promise.reject())
+                .then(data => {
+                  if (!data.imageUrl) throw new Error("리셋 결과 없음");
+                  loadImage(data.imageUrl);
+                  showStatus("✅ 기본 이미지로 변경 완료!");
+                })
+                .catch(err => {
+                  console.error("리셋 오류:", err);
+                  alert("기본 이미지로 변경 실패");
+                });
+      });
+    }
+  });
+
+
+
+  // 🔐 현재 비밀번호 확인
+  function verifyPassword() {
+    const currentPwInput = document.getElementById("currentPassword");
+    const statusMsg = document.getElementById("statusMessage");
+    const newPwSection = document.getElementById("newPasswordSection");
+
+    const currentPw = currentPwInput.value.trim();
+
+    if (!currentPw) {
+      statusMsg.innerText = "현재 비밀번호를 입력해주세요.";
+      newPwSection.style.display = "none";
+      return;
+    }
+
+    fetch("/user/check-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: currentPw })
+    })
+            .then(res => {
+              if (!res.ok) throw new Error("서버 응답 실패");
+              return res.json();
+            })
+            .then(data => {
+              if (data.match === true) {
+                statusMsg.innerText = "✅ 비밀번호 확인 완료!";
+                newPwSection.style.display = "block";
+              } else {
+                statusMsg.innerText = "❌ 비밀번호가 일치하지 않습니다.";
+                newPwSection.style.display = "none";
+              }
+            })
+            .catch(() => {
+              statusMsg.innerText = "⚠️ 서버 오류가 발생했습니다. 다시 시도해주세요.";
+              newPwSection.style.display = "none";
+            });
+  }
+  </script>
+ </body>
+</html>
