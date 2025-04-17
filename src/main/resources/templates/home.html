@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>FROPIFY</title>
+
     <style>
         body {
             background-color: #121212;
@@ -136,10 +137,19 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="navbar">
-    <div class="logo">FROPIFY</div>
+    <div class="logo">
+        <a href="/home"> FROPIFY</a>
+    </div>
+    <div class="nav-center">
+        <form th:action="@{/song/search}" class="search-form">
+            <input type="text" id="q" name="q" placeholder="검색어를 입력하세요." required />
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>

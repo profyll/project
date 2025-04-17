@@ -33,6 +33,12 @@
             font-weight: bold;
             color: #1DB954;
         }
+        .logo a {
+            color: #1DB954;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline;
+        }
 
         .nav-center {
             display: flex;
@@ -108,6 +114,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         .artist-header {
@@ -181,6 +188,28 @@
         body.scrolling::-webkit-scrollbar-track {
             background: transparent;
         }
+        .like-form {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .like-button {
+            background-color: transparent;
+            color: #1DB954;
+            border: 2px solid #1DB954;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .like-button:hover {
+            background-color: #1DB954;
+            color: black;
+        }
         html {
             overflow-y: scroll;
         }
@@ -189,8 +218,10 @@
 <body>
 <div class="navbar">
     <div class="logo">
-        <a th:href="@{/index}">FROPIFY</a>
-    </div>
+
+        <a href="/home">FROPIFY
+        </a></div>
+
     <div class="nav-center">
         <form th:action="@{/song/search}" method="post" class="search-form">
             <input type="text" id="q" name="q" placeholder="검색어를 입력하세요." required/>
@@ -213,20 +244,28 @@
                     <h2 th:text="${name}">아티스트 이름</h2>
                     <p th:if="${genres.length > 0}" th:text="'장르: ' + ${genres[0]}">장르</p>
                 </div>
+                <form th:action="@{/song/artist-update-liked}" class="like-form">
+                    <input type="hidden" name="artistId" th:value="${artistId}" />
+                    <input type="hidden" name="liked" th:value="${liked}" />
+                    <button type="submit" class="like-button">
+                        <span th:text="${liked} ? '♥ Unlike' : '♡ Like'"></span>
+                    </button>
+                </form>
             </div>
+
             <ul class="track-list" th:each="track : ${tracks}">
                 <li>
-                    <form th:action="@{/song/track}" method="post" style="margin: 0;">
-                        <input type="hidden" name="q" th:value="${track.id}" />
-                        <button type="submit"
-                                th:text="${track.name}"
-                                style="background: none; border: none; color: white; font-size: 16px; cursor: pointer; padding: 0; text-align: left;">
-                        </button>
-                    </form>
+                    <a th:href="@{/song/track(q=${track.id})}"
+                       style="display: block; color: white; text-decoration: none; font-size: 16px; padding: 10px 0;">
+                        <span th:text="${track.name}">트랙 이름</span>
+                    </a>
                 </li>
             </ul>
+
         </div>
     </div>
+
+
 <script>
     let scrollTimeout;
 
@@ -241,17 +280,6 @@
     });
 </script>
 
-<ul th:each="track :${tracks}">
-    <li th:text="${track.name}"></li>
-</ul>
-
-<form th:action="@{/song/artist-update-liked}">
-    <input type="hidden" name="artistId" th:value="${artistId}" />
-    <input type="hidden" name="liked" th:value="${liked}" />
-    <button type="submit">
-        <span th:text="${liked} ? 'Unlike' : 'Like'"></span>
-    </button>
-</form>
 
 </body>
 </html>
