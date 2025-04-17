@@ -1,8 +1,10 @@
 package com.example.project.controller;
 
+import com.example.project.entity.Artist;
 import com.example.project.entity.SearchHistory;
 import com.example.project.entity.Song;
 import com.example.project.entity.User;
+import com.example.project.repository.ArtistRepository;
 import com.example.project.repository.SearchHistoryRepository;
 
 import com.example.project.repository.UserRepository;
@@ -29,6 +31,7 @@ public class UserController {
     private UserRepository userRepository;
     private SearchHistoryRepository searchHistoryRepository;
     private SongRepository songRepository;
+    private ArtistRepository artistRepository;
 
     @GetMapping("/mypage")
     public String mypageHandle(@SessionAttribute("user") Optional<User> user, Model model) {
@@ -39,6 +42,10 @@ public class UserController {
             List<Song> liked = songRepository.findByLikedSongByUserId(user.get().getId());
 
             model.addAttribute("liked",liked);
+
+            List<Artist> artistLiked = artistRepository.findByLikedArtistByUserId(user.get().getId());
+
+            model.addAttribute("likedA",artistLiked);
 
         } else {
 

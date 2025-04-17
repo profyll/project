@@ -1,6 +1,7 @@
 package com.example.project.repository;
 
 import com.example.project.entity.Song;
+import com.example.project.entity.TopSong;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,5 +17,5 @@ public interface SongRepository {
     public Song findBySongIdAndUserId(@Param("songId") String songId, @Param("userId") int userId);
     public void update(@Param("songId") String songId, @Param("userId") int userId, @Param("liked") boolean liked);
     public List<Song> findByLikedSongByUserId(@Param("userId") int userId);
-
+    public List<TopSong> getTop10LikedSongs();
 }
