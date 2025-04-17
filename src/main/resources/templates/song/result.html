@@ -33,6 +33,7 @@
             font-weight: bold;
             color: #1DB954;
         }
+
         .logo a {
             color: #1DB954;
             text-decoration: none;
@@ -114,37 +115,96 @@
 
         .track-item {
             background-color: #1f1f1f;
-            padding: 16px 24px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .track-item form {
-            margin: 0;
-        }
-
-        .track-item button {
-            background-color: transparent;
-            border: none;
-            color: #1DB954;
-            font-size: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            gap: 12px;
+            transition: background 0.3s ease;
             cursor: pointer;
-            padding: 0;
-            text-decoration: underline;
         }
 
-        .track-item button:hover {
-            color: #1ed760;
+        .track-item:hover {
+            background-color: #2a2a2a;
+        }
+
+        .track-info-inline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-right: auto;
+        }
+
+        .track-thumb img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        /* ✅ 앨범 아트 주변 여백 제거 */
+        .thumb-button {
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: none;
+            display: inline-block;
+        }
+
+        .thumb-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .thumb-button:hover .thumb-image {
+            transform: scale(1.07);
+            filter: brightness(1.15);
+        }
+
+        /* ✅ 트랙명/아티스트명을 자연스러운 텍스트 링크처럼 스타일링 */
+        .track-name,
+        .artist-name {
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .track-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .artist-name {
+            font-size: 17px;
+            color: #aaaaaa;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            margin-right: 20px;
+        }
+
+        .track-name:hover,
+        .artist-name:hover {
+            color: #1DB954;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
         }
 
         .separator {
             color: #888;
             margin: 0 10px;
         }
+
     </style>
 </head>
 <body>
@@ -166,26 +226,33 @@
     </div>
 </div>
 
-  
+
 <div class="content">
-  <h2>검색 결과</h2>
+    <h2>검색 결과</h2>
     <ul>
-    <li th:each="track : ${tracks}">
-        <div class="track-item">
-            <form th:action="@{/song/track}">
-                <input type="hidden" name="q" th:value="${track.id}"/>
-                <button type="submit" th:text="${track.name}"></button>
-            </form>
-            <form th:action="@{/song/artist}">
+        <li th:each="track : ${tracks}">
+            <div class="track-item">
 
-                <input type="hidden" name="q" th:value="${track.artists[0].getId()}"/>
-                <button type="submit" th:text="${track.artists[0].name}"></button>
-            </form>
+                <form th:action="@{/song/track}" method="get" style="all: unset;">
+                    <input type="hidden" name="q" th:value="${track.id}" />
+                    <button type="submit" class="thumb-button">
+                        <img th:src="${track.album.images[0].url}" alt="Album Art" class="thumb-image" />
+                    </button>
+                </form>
 
-        </div>
-    </li>
-</ul>
+                <div class="track-info-inline">
+                    <a th:href="@{/song/track(q=${track.id})}" class="track-name" th:text="${track.name}"></a>
+                    <a th:href="@{/song/artist(q=${track.artists[0].id})}" class="artist-name" th:text="${track.artists[0].name}"></a>
+                </div>
+
+            </div>
+
+        </li>
+    </ul>
 </div>
+<script>
+
+</script>
 
 </body>
 </html>
