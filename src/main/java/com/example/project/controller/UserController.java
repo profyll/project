@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Controller
 @AllArgsConstructor
@@ -31,11 +29,9 @@ public class UserController {
     private UserRepository userRepository;
     private SearchHistoryRepository searchHistoryRepository;
     private SongRepository songRepository;
-  
+
     @GetMapping("/mypage")
-    public String mypageHandle(
-            @SessionAttribute(name = "user", required = false) User user,
-            Model model) {
+    public String mypageHandle(@SessionAttribute("user") Optional<User> user, Model model) {
 
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
@@ -49,7 +45,10 @@ public class UserController {
             return "redirect:/index";
         }
 
-        int userId = user.getId();
+        User u = user.get(); // Optional에서 꺼냄
+        model.addAttribute("user", u);
+
+        int userId = u.getId();
 
         List<Song> likedSongs = userRepository.findLikedSongsByUserId(userId);
         List<SearchHistoryWithSong> rawHistory = searchHistoryRepository.getSearchHistoryWithSongByUserId(userId);
@@ -58,12 +57,13 @@ public class UserController {
         for (SearchHistoryWithSong h : rawHistory) {
             System.out.println(h.getSongName() + " / " + h.getSearchedAt());
         }
-        model.addAttribute("user", user);
+
         model.addAttribute("likedSongs", likedSongs);
         model.addAttribute("searchHistory", rawHistory);
 
         return "user/mypage";
     }
+
 
 
 

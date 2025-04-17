@@ -15,7 +15,6 @@ public class SearchHistory {
         private String songName;
         private int userId;
         private LocalDateTime searchedAt;
-        private int userId;
         private String image;
     }
 

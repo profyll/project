@@ -22,4 +22,6 @@ private LocalDate createdAt;
 private String provider;
 private String providerId;
 private String picture;
+
+
 }
