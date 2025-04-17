@@ -16,9 +16,11 @@ import com.example.project.vo.SearchHistoryWithSong;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
+import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.IPlaylistItem;
 import com.wrapper.spotify.model_objects.specification.*;
 import com.wrapper.spotify.requests.data.artists.GetArtistRequest;
+import com.wrapper.spotify.requests.data.artists.GetArtistsRelatedArtistsRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
 import com.wrapper.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
@@ -26,9 +28,12 @@ import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.apache.hc.core5.http.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -77,7 +82,6 @@ public class SongApiController {
             return "error";
         }
     }
-
 
 
     @GetMapping("/artist")
@@ -145,7 +149,6 @@ public class SongApiController {
             }
 
 
-
             Song song = Song.builder()
                     .songName(track.getName())
                     .artistName(track.getArtists()[0].getName())
@@ -171,7 +174,7 @@ public class SongApiController {
             }
 
 
-            com.example.project.entity.Song existing = songRepository.findBySongIdAndUserId(trackId,user.getId());
+            com.example.project.entity.Song existing = songRepository.findBySongIdAndUserId(trackId, user.getId());
 
             boolean liked = existing != null && existing.isLiked();
 
@@ -288,7 +291,6 @@ public class SongApiController {
     }
 
 
-
     @PostMapping("/track/{songId}/comment")
     public String addComment(@RequestParam("content") String content,
                              @SessionAttribute("user") User user,
@@ -315,5 +317,6 @@ public class SongApiController {
 
         return "redirect:/song/track?q=" + songId;
     }
+
 
 }

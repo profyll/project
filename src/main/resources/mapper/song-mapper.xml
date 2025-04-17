@@ -5,7 +5,8 @@
 <mapper namespace="com.example.project.repository.SongRepository">
     <insert id="create">
         INSERT INTO song ( artist_name, artist_id, song_name, release_date, image, preview, liked, song_id, user_id )
-        VALUES ( #{artistName}, #{artistId}, #{songName}, #{releaseDate}, #{image}, #{preview}, #{liked}, #{songId}, #{userId} )
+        VALUES ( #{artistName}, #{artistId}, #{songName}, #{releaseDate}, #{image}, #{preview}, #{liked}, #{songId},
+        #{userId} )
     </insert>
     <delete id="delete" parameterType="int">
         DELETE FROM song
@@ -26,4 +27,10 @@
         SELECT
         s.* FROM song s WHERE s.user_id = #{userId} AND s.liked = true
     </select>
+    <select id="getTop10LikedSongs" resultType="topSong">
+        SELECT song_id, song_name, artist_name, image, COUNT(*) AS likeCount FROM
+        song WHERE liked = true GROUP BY song_id, song_name, artist_name
+        ORDER BY likeCount desc LIMIT 10
+    </select>
+
 </mapper>
