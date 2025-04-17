@@ -18,5 +18,7 @@ public interface UserRepository {
     public User findByEmail(@Param("email") String email);
     public User findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
     List<Song> findLikedSongsByUserId(@Param("userId") int userId);
+    public int updateImage(@Param("id") int id, @Param("image") String image);
+
 
 }
