@@ -42,16 +42,28 @@ public class AuthController {
             @ModelAttribute LoginRequest loginRequest,
             HttpSession session,
             Model model) {
-        User user =
-                userRepository.findByEmail(loginRequest.getEmail());
-        if (user != null && user.getPassword().equals(loginRequest.getPassword())) {
+
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
+        // 입력값 검증
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            model.addAttribute("loginError", "이메일과 비밀번호를 입력해주세요.");
+            return "auth/login"; // 에러 메시지를 보여주며 다시 로그인 페이지로
+        }
+
+        User user = userRepository.findByEmail(email);
+
+        if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("user", user);
             session.setAttribute("userId", user.getId());
             return "redirect:/index";
         } else {
-            return "redirect:/auth/login";
+            model.addAttribute("loginError", "이메일 또는 비밀번호가 올바르지 않습니다.");
+            return "auth/login";
         }
     }
+
 
     @GetMapping("/signup")
     public String signupGetHandle(Model model) {
@@ -67,20 +79,36 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String signupPostHandle(@ModelAttribute User user) {
-        User found = userRepository.findByEmail(user.getEmail());
-        if (found == null) {
-            userRepository.create(user);
-            user.setProvider("LOCAL");
+    public String signupPostHandle(@ModelAttribute User user, Model model) {
+        String email = user.getEmail();
+        String password = user.getPassword();
+        String name = user.getNickname(); // 필요하다면
+
+        // 입력값 검증
+        if (email == null || email.isBlank() ||
+                password == null || password.isBlank() ||
+                name == null || name.isBlank()) {
+
+            model.addAttribute("signupError", "모든 필수 정보를 입력해주세요.");
+            return "auth/signup";
         }
-        return "redirect:/home";
+
+        User found = userRepository.findByEmail(email);
+        if (found == null) {
+            user.setProvider("LOCAL");
+            userRepository.create(user);
+            return "redirect:/home";
+        } else {
+            model.addAttribute("signupError", "이미 존재하는 이메일입니다.");
+            return "auth/signup";
+        }
     }
+
+
     @GetMapping("/kakao/callback")
     public String kakaoCallbackHandle(@RequestParam("code") String code,
                                       HttpSession session
     ) throws JsonProcessingException {
-
-        log.info("💥 콜백 도착! 받은 인가코드: {}", code);
 
         KakaoTokenResponse response = kakaoApiService.exchangeToken(code);
         log.info("response = {}", response);
@@ -100,7 +128,7 @@ public class AuthController {
                     .provider("KAKAO")
                     .providerId(sub)
                     .nickname(nickname)
-                    .picture(picture)
+                    .image(picture)
                     .build();
 
             userRepository.create(user);  // DB에 INSERT

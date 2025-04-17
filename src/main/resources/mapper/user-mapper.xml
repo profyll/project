@@ -23,4 +23,19 @@
         WHERE l.user_id = #{userId}
     </select>
 
+    <update id="updateImage">
+        UPDATE users
+        SET image = #{image}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateUserInfo" parameterType="map">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        email = #{email},
+        gender = #{gender},
+        password = #{password}
+        WHERE id = #{id}
+    </update>
 </mapper>

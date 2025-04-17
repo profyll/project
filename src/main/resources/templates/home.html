@@ -1,8 +1,214 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>FROPIFY</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 85px;
+            z-index: 1000;
+            box-sizing: border-box;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo a {
+            font-size: 25px;
+            font-weight: bold;
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-form {
+            display: flex;
+            background-color: #2c2c2c;
+            border-radius: 30px;
+            padding: 10px 15px;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-form input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 17px;
+            padding: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        .search-form button {
+            background-color: #1DB954;
+            border: none;
+            color: white;
+            width: 90px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #2c2c2c;
+        }
+
+        .content {
+            margin-top: 100px;
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .left-section {
+            width: 280px;
+        }
+
+        .chart-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .section {
+            background-color: #1e1e1e;
+            padding: 25px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        h3 {
+            margin-bottom: 20px;
+        }
+
+        /* 좋아요한 아티스트 전용 리스트 스타일 */
+        .liked-artist-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: space-between;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .liked-artist-list li {
+            width: 170px;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .liked-artist-list li:hover {
+            transform: scale(1.05);
+        }
+
+        .liked-artist-list img {
+            width: 140px;
+            height: 140px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .liked-artist-list p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #eee;
+        }
+
+        /* 공통 item list */
+        .item-list {
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 30px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .item-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .item-list li {
+            flex: 0 0 auto;
+            width: 150px;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .item-list li:hover {
+            transform: scale(1.05);
+        }
+
+        .item-list img {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
 </head>
 <style>
     body {
@@ -148,7 +354,7 @@
 <body>
 <div class="navbar">
     <div class="logo">
-        <a href="/home"> FROPIFY</a>
+        <a href="/home">FROPIFY</a>
     </div>
     <div class="nav-center">
         <form th:action="@{/song/search}" class="search-form">
@@ -164,17 +370,54 @@
 </div>
 
 <div class="content">
-    <div class="left-section">
-        <h2>마이페이지</h2>
-        <button class="mypage-button">정보 수정</button>
-    </div>
-    <div class="right-section">
-        <h2>노래 목록</h2>
-        <ul>
-            <li th:each="one:${Artist}"></li>
+
+
+    <!-- ❤️ 좋아요한 아티스트 (3개 고정) -->
+    <div class="left-section section">
+        <a th:href="@{/user/liked}">
+            <h3>❤️ 좋아요한 가수</h3>
+        </a>
+        <ul class="liked-artist-list">
+            <li th:each="one, iterStat : ${likedA}" th:if="${iterStat.index < 3}">
+                <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                    <img th:src="${one.image}" alt="artist"/>
+                </a>
+                <p th:text="${one.artistName}"></p>
+                <p th:text="${one.genre}"></p>
+            </li>
         </ul>
     </div>
+
+    <!-- 🔥 Top 10 트랙 -->
+    <div class="chart-section">
+        <div class="section">
+            <h3>🔥 Top 10 트랙</h3>
+            <ul class="item-list">
+                <li th:each="one : ${topSong}">
+                    <a th:href="@{'/song/track?q=' + ${one.songId}}">
+                        <img th:src="${one.image}" alt="track"/>
+                    </a>
+                    <p th:text="${one.songName}"></p>
+                    <p th:text="${one.artistName}"></p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 🌟 Top 10 아티스트 -->
+        <div class="section">
+            <h3>🌟 Top 10 아티스트</h3>
+            <ul class="item-list">
+                <li th:each="one : ${topArist}">
+                    <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                        <img th:src="${one.image}" alt="artist"/>
+                    </a>
+                    <p th:text="${one.artistName}"></p>
+                    <p th:text="${one.genre}"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
-</script>
+
 </body>
 </html>
