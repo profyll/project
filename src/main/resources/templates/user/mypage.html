@@ -147,6 +147,13 @@
             font-size: 14px;
             color: #eee;
         }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -166,11 +173,40 @@
     <div class="user-card">
         <h1>마이페이지</h1>
 
-        <div class="user-info">
-            <div class="profile-img">
-                <p>프로필 이미지 없음</p>
-            </div>
-            <h3 th:text="${user.nickname}">닉네임</h3>
+        <div>
+            <!-- 알림 메시지 -->
+            <div id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 5px;"></div>
+
+            <!-- 로딩 표시 -->
+            <div id="imagePlaceholder">이미지 불러오는 중...</div>
+
+            <!-- 프로필 이미지 -->
+            <img id="profileImage"
+                 src=""
+                 alt="profile image"
+                 style="width: 120px; border-radius: 50%; margin-bottom: 10px; display: none;"
+                 onerror="this.src='/icons/profile.png';" />
+
+            <!-- 이미지 업로드 폼 -->
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" name="image" id="imageInput" accept="image/*" style="display: none;" />
+                <button type="button" onclick="document.getElementById('imageInput').click();">이미지 변경</button>
+            </form>
+
+            <!-- 기본 이미지로 리셋 -->
+            <form id="deleteForm" th:action="@{/user/mypage/delete-image}" method="post" style="margin-top: 10px;">
+                <button type="submit">기본 이미지로 변경</button>
+            </form>
+        </div>
+
+
+
+
+
+
+
+
+        <h3 th:text="${user.nickname}">닉네임</h3>
         </div>
 
         <div class="section liked-songs">
@@ -214,6 +250,107 @@
 
     </div>
 </div>
+
+
+
+<script th:inline="javascript">
+    const profileImage = document.getElementById('profileImage');
+    const placeholder = document.getElementById('imagePlaceholder');
+    const imageInput = document.getElementById('imageInput');
+    const deleteForm = document.getElementById('deleteForm');
+    const statusMessage = document.getElementById('statusMessage');
+
+    const imageUrl = /*[[${image}]]*/ '/icons/profile.png';
+    const defaultImage = '/icons/profile.png';
+
+    // 공통 메시지 표시
+    function showStatus(msg, duration = 2000) {
+        statusMessage.textContent = msg;
+        statusMessage.style.display = 'block';
+        if (duration > 0) {
+            setTimeout(() => statusMessage.style.display = 'none', duration);
+        }
+    }
+
+    // 이미지 로딩
+    function loadImage(url, loadingMsg = "이미지 불러오는 중...") {
+        placeholder.textContent = loadingMsg;
+        placeholder.style.display = 'block';
+        profileImage.style.display = 'none';
+
+        profileImage.onload = () => {
+            placeholder.style.display = 'none';
+            profileImage.style.display = 'block';
+        };
+
+        profileImage.src = url + '?t=' + Date.now();
+    }
+
+    // 이미지 로딩 실패 시 fallback
+    function handleImageError() {
+        profileImage.src = defaultImage;
+    }
+
+    // 초기 설정
+    window.addEventListener('DOMContentLoaded', () => {
+        profileImage.onerror = handleImageError;
+        loadImage(imageUrl);
+    });
+
+    // 이미지 업로드 처리
+    imageInput.addEventListener('change', () => {
+        const file = imageInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        // 이미지 변경 시작 시 메시지와 로딩 표시
+        showStatus("이미지 변경 중...");
+        loadImage(defaultImage, "변경된 이미지 적용 중...");
+
+        fetch('/user/mypage/upload-image', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("응답 결과:", data);  // 🔍 확인용 로그
+                if (!data.imageUrl) throw new Error("imageUrl이 없음");
+
+                // 변경된 이미지 다시 로딩
+                loadImage(data.imageUrl, "변경된 이미지 적용 중...");
+                showStatus("✅ 이미지 변경 완료!");
+            })
+            .catch(err => {
+                console.error("업로드 오류:", err);
+                alert("이미지 업로드 실패");
+            });
+    });
+
+
+    // 기본 이미지로 리셋
+    deleteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        showStatus("기본 이미지로 변경 중...");
+        loadImage(defaultImage);
+
+        fetch('/user/mypage/delete-image', { method: 'POST' })
+            .then(res => res.ok ? res.json() : Promise.reject())
+            .then(data => {
+                console.log("리셋 응답:", data);
+                if (!data.imageUrl) throw new Error("리셋 결과 없음");
+                loadImage(data.imageUrl);
+                showStatus("✅ 기본 이미지로 변경 완료!");
+            })
+            .catch(err => {
+                console.error("리셋 오류:", err);
+                alert("기본 이미지로 변경 실패");
+            });
+    });
+</script>
+
 
 
 
