@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
@@ -72,10 +73,6 @@ public class UserController {
 
     }
 
-
-
-
-
     @GetMapping("/logout")
     public String logout(@SessionAttribute("user") Optional<User> user, HttpSession session, Model model) {
         if (user.isPresent()) {
@@ -85,6 +82,21 @@ public class UserController {
             return "redirect:/index";
         }
         return "redirect:/index";
+    }
+
+    @GetMapping("/liked")
+    public String likedHandle(@SessionAttribute("user") Optional<User> user, Model model){
+
+        if (user.isPresent()){
+            List<Song> songs = songRepository.findByLikedSongByUserId(user.get().getId());
+            model.addAttribute("likeSong", songs);
+
+            List<Artist> artists = artistRepository.findByLikedArtistByUserId(user.get().getId());
+            model.addAttribute("likeArtist", artists);
+        }else {
+            return "redirect:/index";
+        }
+        return "user/liked";
     }
 }
 

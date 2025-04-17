@@ -97,7 +97,7 @@
         }
 
         .left-section {
-            width: 260px;
+            width: 280px;
         }
 
         .chart-section {
@@ -118,31 +118,61 @@
             margin-bottom: 20px;
         }
 
-        /* 공통 item list 스타일 */
+        /* 좋아요한 아티스트 전용 리스트 스타일 */
+        .liked-artist-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: space-between;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .liked-artist-list li {
+            width: 170px;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .liked-artist-list li:hover {
+            transform: scale(1.05);
+        }
+
+        .liked-artist-list img {
+            width: 140px;
+            height: 140px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .liked-artist-list p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #eee;
+        }
+
+        /* 공통 item list */
         .item-list {
             display: flex;
             flex-direction: row;
-            flex-wrap: nowrap;
             overflow-x: auto;
             list-style: none;
             padding: 0;
             margin: 0;
-            gap: 20px;
-            scrollbar-width: thin;
-            scrollbar-color: #555 #1e1e1e;
+            gap: 30px;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .item-list::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .item-list::-webkit-scrollbar-thumb {
-            background-color: #555;
-            border-radius: 4px;
-        }
-
-        .item-list::-webkit-scrollbar-track {
-            background: #1e1e1e;
+            display: none;
         }
 
         .item-list li {
@@ -168,16 +198,18 @@
             margin-bottom: 10px;
         }
 
-        .item-list p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #eee;
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
-<!-- 네비게이션 바 -->
 <div class="navbar">
     <div class="logo">
         <a href="/home">FROPIFY</a>
@@ -195,13 +227,14 @@
     </div>
 </div>
 
-<!-- 메인 콘텐츠 -->
 <div class="content">
-    <!-- ❤️ 좋아요한 아티스트 -->
+    <!-- ❤️ 좋아요한 아티스트 (3개 고정) -->
     <div class="left-section section">
-        <h3>❤️ 좋아요한 가수</h3>
-        <ul class="item-list" th:each="one, iterStat : ${likedA}">
-            <li th:if="${iterStat.index < 5}">
+        <a th:href="@{/user/liked}">
+            <h3>❤️ 좋아요한 가수</h3>
+        </a>
+        <ul class="liked-artist-list">
+            <li th:each="one, iterStat : ${likedA}" th:if="${iterStat.index < 3}">
                 <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
                     <img th:src="${one.image}" alt="artist"/>
                 </a>
@@ -211,9 +244,8 @@
         </ul>
     </div>
 
-    <!-- 중앙: Top 10 트랙 & 아티스트 -->
+    <!-- 🔥 Top 10 트랙 -->
     <div class="chart-section">
-        <!-- 🔥 Top 10 트랙 -->
         <div class="section">
             <h3>🔥 Top 10 트랙</h3>
             <ul class="item-list">

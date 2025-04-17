@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Profify | mypage</title>
+    <title>FROPIFY | MyPage</title>
     <style>
         body {
             background-color: #121212;
@@ -16,16 +16,13 @@
             padding: 20px 30px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             position: fixed;
             top: 0;
             width: 100%;
             height: 85px;
             z-index: 1000;
             box-sizing: border-box;
-        }
-
-        .navbar div {
-            width: 33.333%;
         }
 
         .logo {
@@ -40,9 +37,14 @@
             display: inline;
         }
 
-        .nav-center {
+
+        .search-form {
             display: flex;
-            justify-content: center;
+            background-color: #2c2c2c;
+            border-radius: 30px;
+            padding: 10px 15px;
+            align-items: center;
+            width: 400px;
         }
 
         .search-form input {
@@ -56,7 +58,7 @@
         }
 
         .search-form button {
-            background-color: #1DB954;
+            background-color: #B0B0B0; /* 회색으로 변경 */
             border: none;
             color: white;
             width: 90px;
@@ -69,9 +71,6 @@
         .nav-links {
             display: flex;
             gap: 20px;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            justify-content: flex-end;
             align-items: center;
         }
 
@@ -89,7 +88,7 @@
         }
 
         .content {
-            margin-top: 90px;
+            margin-top: 100px;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -98,43 +97,51 @@
 
         .user-card {
             background-color: #1e1e1e;
-            padding: 25px 30px;
+            padding: 30px;
             border-radius: 20px;
-            margin-top: 40px;
             width: 100%;
-            max-width: 700px;
+            max-width: 900px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
         }
 
-        .liked-song-list {
+        .section {
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
             display: flex;
-            justify-content: flex-start; /* 가로로 배치 */
-            gap: 20px;
-            padding: 0;
-            margin-top: 15px;
-            list-style: none;
-            flex-wrap: nowrap; /* 세로로 넘어가지 않도록 설정 */
+            justify-content: center;
         }
 
-        .liked-song-list li {
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider-item {
             background-color: #2a2a2a;
             border-radius: 15px;
             padding: 15px;
             text-align: center;
             width: 150px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            flex: 0 0 auto;
+            margin-right: 20px;
             transition: transform 0.3s;
         }
 
-        .liked-song-list li:hover {
-            transform: scale(1.05);
-        }
-
-        .liked-song-list img {
+        .slider-item img {
             width: 120px;
             height: 120px;
             border-radius: 10px;
@@ -142,19 +149,70 @@
             margin-bottom: 10px;
         }
 
-        .liked-song-list p {
+        .slider-item p {
             margin: 5px 0;
             font-size: 14px;
             color: #eee;
         }
+
+        .slider-buttons {
+            display: none; /* 화살표 제거 */
+        }
+
+        /* 최근 검색 기록 영역에만 가로 스크롤바 추가 */
+        .search-history .slider-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 10px; /* 하단 여백 추가 */
+        }
+
+        .search-history .slider-wrapper {
+            display: inline-flex;
+        }
+
+        .search-history .slider-item {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        /* 스크롤바 스타일 */
+        .search-history .slider-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .search-history .slider-container::-webkit-scrollbar-track {
+            background: #2c2c2c;
+            border-radius: 10px;
+        }
+
+        .search-history .slider-container::-webkit-scrollbar-thumb {
+            background: #B0B0B0; /* 회색으로 변경 */
+            border-radius: 10px;
+        }
+
+        .search-history .slider-container::-webkit-scrollbar-thumb:hover {
+            background: #9a9a9a;
+        }
+
+        /* 좋아요한 트랙, 아티스트에 스크롤바 없애기 */
+        .liked-songs .slider-container, .liked-artists .slider-container {
+            overflow: hidden;
+        }
+
     </style>
 </head>
 <body>
+
 <div class="navbar">
     <div class="logo">
-        <a href="/home"> FROPIFY </a>
+        <a href="/home">FROPIFY</a>
     </div>
-    <div class="spacer"></div>
+
+    <form th:action="@{/song/search}" class="search-form">
+        <input type="text" id="q" name="q" placeholder="검색어를 입력하세요." required />
+        <button type="submit">검색</button>
+    </form>
+
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>
@@ -165,57 +223,86 @@
 <div class="content">
     <div class="user-card">
         <h1>마이페이지</h1>
+        <h3 th:text="${user.nickname}">닉네임</h3>
 
-        <div class="user-info">
-            <div class="profile-img">
-                <p>프로필 이미지 없음</p>
-            </div>
-            <h3 th:text="${user.nickname}">닉네임</h3>
-        </div>
-
+        <!-- 좋아요한 노래 -->
         <div class="section liked-songs">
+            <a th:href="@{/user/liked}">
             <h3>❤️ 좋아요한 노래</h3>
-          
-            <ul class="liked-song-list" th:each="one, iterStat : ${liked}">
-                <li th:if="${iterStat.index < 5}">
-                    <a th:href="@{/song/track(q=${one.songId})}"><img th:src="${one.image}" alt="cover"/></a>
-                    <p th:text="${one.songName}"></p>
-                    <p th:text="${one.artistName}"></p>
-                </li>
-            </ul>
-
+            </a>
+            <div class="slider-container">
+                <div class="slider-wrapper" id="liked-songs-slider">
+                    <div class="slider-item" th:each="one, iterStat : ${liked}" th:if="${iterStat.index < 5}">
+                        <a th:href="@{/song/track(q=${one.songId})}">
+                            <img th:src="${one.image}" alt="cover"/>
+                        </a>
+                        <p th:text="${one.songName}">곡 제목</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 좋아요한 가수 -->
         <div class="section liked-artists">
+            <a th:href="@{/user/liked}">
             <h3>❤️ 좋아요한 가수</h3>
-
-            <ul class="liked-song-list" th:each="one, iterStat : ${likedA}">
-                <li th:if="${iterStat.index < 5}">
-                    <a th:href="${'/song/artist?q=' + one.artistId}"><img th:src="${one.image}" alt="cover"/></a>
-                    <p th:text="${one.artistName}"></p>
-                    <p th:text="${one.genre}"></p>
-                </li>
-            </ul>
-
+            </a>
+            <div class="slider-container">
+                <div class="slider-wrapper" id="liked-artists-slider">
+                    <div class="slider-item" th:each="one, iterStat : ${likedA}" th:if="${iterStat.index < 5}">
+                        <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                            <img th:src="${one.image}" alt="artist"/>
+                        </a>
+                        <p th:text="${one.artistName}">가수 이름</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- 최근 검색 기록 -->
         <div class="section search-history">
             <h3>🔍 최근 검색 기록</h3>
-
-            <ul>
-                <li th:each="history : ${searchHistory}" style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <img th:src="${history.image}" alt="song image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />
-                    <p th:text="${history.songName}">
-                        검색어 (검색시간)
-                    </p>
-                </li>
-            </ul>
+            <div class="slider-container">
+                <div class="slider-wrapper" id="search-history-slider">
+                    <div class="slider-item" th:each="history, iterStat : ${searchHistory}" th:if="${iterStat.index < 5}">
+                        <a th:href="@{'/song/track?q=' + ${history.songId}}">
+                            <img th:src="${history.image}" alt="cover"/>
+                        </a>
+                        <p th:text="${history.songName}">곡 제목</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
 </div>
 
+<script>
+    // 슬라이드 제어 (최근 검색 기록에 대해서만 동작)
+    function slide(direction, sliderId, wrapperId) {
+        const slider = document.getElementById(sliderId);
+        const wrapper = document.getElementById(wrapperId);
+        const items = wrapper.getElementsByClassName('slider-item');
+        const totalItems = items.length;
 
+        const itemWidth = items[0].offsetWidth + 20; // 각 아이템의 폭 + 간격
+        const currentTransform = parseFloat(slider.style.transform.replace('translateX(', '').replace('px)', '')) || 0;
+
+        let newTransform = currentTransform + direction * itemWidth;
+        if (newTransform > 0) newTransform = -(totalItems - 3) * itemWidth; // 넘기면 마지막으로
+        if (newTransform < -(totalItems - 3) * itemWidth) newTransform = 0; // 넘기면 처음으로
+
+        slider.style.transform = `translateX(${newTransform}px)`;
+    }
+
+    document.getElementById("prev-btn-history").addEventListener("click", function() {
+        slide(1, "search-history-slider", "search-history-slider");
+    });
+
+    document.getElementById("next-btn-history").addEventListener("click", function() {
+        slide(-1, "search-history-slider", "search-history-slider");
+    });
+</script>
 
 </body>
 </html>
