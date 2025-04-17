@@ -249,17 +249,16 @@
                     </button>
                 </form>
             </div>
+
             <ul class="track-list" th:each="track : ${tracks}">
                 <li>
-                    <form th:action="@{/song/track}" method="post" style="margin: 0;">
-                        <input type="hidden" name="q" th:value="${track.id}" />
-                        <button type="submit"
-                                th:text="${track.name}"
-                                style="background: none; border: none; color: white; font-size: 16px; cursor: pointer; padding: 0; text-align: left;">
-                        </button>
-                    </form>
+                    <a th:href="@{/song/track(q=${track.id})}"
+                       style="display: block; color: white; text-decoration: none; font-size: 16px; padding: 10px 0;">
+                        <span th:text="${track.name}">트랙 이름</span>
+                    </a>
                 </li>
             </ul>
+
         </div>
     </div>
 
