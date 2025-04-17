@@ -1,149 +1,145 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>FROPIFY</title>
+
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 85px;
+            z-index: 1000;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #1DB954;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #2c2c2c;
+        }
+
+        .content {
+            margin-top: 100px;
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .left-section {
+            width: 260px;
+        }
+
+        .chart-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .section {
+            background-color: #1e1e1e;
+            padding: 25px 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        h3 {
+            margin-bottom: 20px;
+        }
+
+        /* 공통 item list 스타일 */
+        .item-list {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: #555 #1e1e1e;
+        }
+
+        .item-list::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .item-list::-webkit-scrollbar-thumb {
+            background-color: #555;
+            border-radius: 4px;
+        }
+
+        .item-list::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        .item-list li {
+            flex: 0 0 auto;
+            width: 150px;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .item-list li:hover {
+            transform: scale(1.05);
+        }
+
+        .item-list img {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .item-list p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #eee;
+        }
+    </style>
 </head>
-<style>
-    body {
-        background-color: #121212;
-        color: white;
-        font-family: Arial, sans-serif;
-        margin: 0;
-    }
 
-    .navbar {
-        background-color: #1a1a1a;
-        padding: 20px 30px;
-        display: flex;
-        align-items: center;
-        position: fixed;
-        top : 0;
-        width: 100%;
-        height: 85px;
-        z-index: 1000;
-        box-sizing: border-box;
-    }
-
-    .navbar div {
-        width: 33.333%;
-    }
-
-    .logo {
-        font-size: 25px;
-        font-weight: bold;
-        color: #1DB954;
-    }
-    .logo a {
-        color: #1DB954;
-        text-decoration: none;
-        cursor: pointer;
-        display: inline;
-    }
-
-    .nav-center {
-        display: flex;
-        justify-content: center;
-    }
-
-    .search-form {
-        display: flex;
-        background-color: #2c2c2c;
-        border-radius: 30px;
-        padding: 10px 15px;
-        align-items: center;
-        width: 100%;
-    }
-
-    .search-form input {
-        background: transparent;
-        border: none;
-        color: white;
-        font-size: 17px;
-        padding: 8px;
-        width: 100%;
-        outline: none;
-    }
-
-    .search-form button {
-        background-color: #1DB954;
-        border: none;
-        color: white;
-        width: 90px;
-        padding: 6px 14px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 15px;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 20px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    .nav-links a {
-        color: white;
-        text-decoration: none;
-        font-size: 17px;
-        padding: 8px 14px;
-        border-radius: 6px;
-        transition: background-color 0.3s;
-    }
-
-    .nav-links a:hover {
-        background-color: #2c2c2c;
-    }
-
-    .content {
-        padding-top: 100px;
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: center;
-        height: 100vh;
-        box-sizing: border-box;
-        gap: 20px;
-    }
-
-    .left-section {
-        width: 35%;
-        padding: 20px;
-        box-sizing: border-box;
-
-    }
-
-    .right-section {
-        width: 65%;
-        padding: 20px;
-        box-sizing: border-box;
-        background-color: #1f1f1f;
-        border-radius: 12px; /* 모서리 둥글게 */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
-
-
-    .mypage-button {
-        background-color: #1f1f1f;
-        color: #ffffff;
-        border: 1px solid #333;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .mypage-button:hover {
-        background-color: #333333;
-    }
-
-</style>
 <body>
-<div class="navbar">
+
     <div class="logo">
         <a href="/home"> FROPIFY</a>
     </div>
@@ -153,6 +149,7 @@
             <button type="submit">검색</button>
         </form>
     </div>
+
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>
@@ -161,17 +158,51 @@
 </div>
 
 <div class="content">
-    <div class="left-section">
-        <h2>마이페이지</h2>
-        <button class="mypage-button">정보 수정</button>
-    </div>
-    <div class="right-section">
-        <h2>노래 목록</h2>
-        <ul>
-            <li th:each="one:${Artist}"></li>
+    <!-- ❤️ 좋아요한 아티스트 -->
+    <div class="left-section section">
+        <h3>❤️ 좋아요한 가수</h3>
+        <ul class="item-list" th:each="one, iterStat : ${likedA}">
+            <li th:if="${iterStat.index < 5}">
+                <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                    <img th:src="${one.image}" alt="artist"/>
+                </a>
+                <p th:text="${one.artistName}"></p>
+                <p th:text="${one.genre}"></p>
+            </li>
         </ul>
     </div>
+
+    <!-- 중앙: Top 10 트랙 & 아티스트 -->
+    <div class="chart-section">
+        <!-- 🔥 Top 10 트랙 -->
+        <div class="section">
+            <h3>🔥 Top 10 트랙</h3>
+            <ul class="item-list">
+                <li th:each="one : ${topSong}">
+                    <a th:href="@{'/song/track?q=' + ${one.songId}}">
+                        <img th:src="${one.image}" alt="track"/>
+                    </a>
+                    <p th:text="${one.songName}"></p>
+                    <p th:text="${one.artistName}"></p>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 🌟 Top 10 아티스트 -->
+        <div class="section">
+            <h3>🌟 Top 10 아티스트</h3>
+            <ul class="item-list">
+                <li th:each="one : ${topArist}">
+                    <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                        <img th:src="${one.image}" alt="artist"/>
+                    </a>
+                    <p th:text="${one.artistName}"></p>
+                    <p th:text="${one.genre}"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
-</script>
+
 </body>
 </html>
