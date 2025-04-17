@@ -55,11 +55,9 @@ public class UserController {
         List<SearchHistoryWithSong> rawHistory = searchHistoryRepository.getSearchHistoryWithSongByUserId(u.getId());
         model.addAttribute("searchHistory", rawHistory);
 
-            List<Artist> artistLiked = artistRepository.findByLikedArtistByUserId(user.get().getId());
+        List<Artist> artistLiked = artistRepository.findByLikedArtistByUserId(user.get().getId());
 
-            model.addAttribute("likedA",artistLiked);
-
-        } else {
+        model.addAttribute("likedA",artistLiked);
 
 
         // 이미지 경로 설정
@@ -73,6 +71,7 @@ public class UserController {
 
         return "user/mypage";
     }
+
 
 
 
