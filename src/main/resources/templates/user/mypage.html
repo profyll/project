@@ -157,6 +157,46 @@
             text-decoration: none; /* 밑줄 제거 */
             cursor: default; /* 클릭 불가능 */
         }
+
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .edit-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .edit-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(0.95); /* 살짝 줄어드는 느낌 */
+        }
+
+        .edit-link:active {
+            transform: scale(0.90); /* 클릭 시 더 눌림 */
+        }
+        .nickname {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
@@ -185,18 +225,19 @@
                  onerror="this.src='/icons/profile.png';" />
 
             <!-- 정보수정 링크 -->
-            <div style="margin-top: 20px;">
-                <a th:href="@{/user/edit}" style="color: #007bff; text-decoration: none; font-weight: bold;">
-                    정보수정 하러 가기
+            <div style="margin-top: 20px; text-align: center;">
+                <a th:href="@{/user/edit}" style="color: #dadada; text-decoration: none; font-weight: bold;" class="edit-link">
+                    정보수정
                 </a>
+                <h3 th:text="${user.nickname}">닉네임</h3>
             </div>
         </div>
 
 
 
-        <h3 th:text="${user.nickname}">닉네임</h3>
 
-        <!-- 좋아요한 노래 -->
+
+            <!-- 좋아요한 노래 -->
         <div class="section liked-songs">
             <a th:href="@{/user/liked}">
                 <h3>❤️ 좋아요한 노래</h3>
@@ -263,6 +304,5 @@
 
 
 </script>
-
 </body>
 </html>
