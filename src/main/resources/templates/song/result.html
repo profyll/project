@@ -33,6 +33,12 @@
             font-weight: bold;
             color: #1DB954;
         }
+        .logo a {
+            color: #1DB954;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline;
+        }
 
         .nav-center {
             display: flex;
@@ -145,7 +151,7 @@
 
 <div class="navbar">
     <div class="logo">
-        <a>FROPIFY
+        <a href="/home">FROPIFY
         </a></div>
     <div class="nav-center">
         <form th:action="@{/song/search}" method="post" class="search-form">
@@ -170,7 +176,6 @@
                 <input type="hidden" name="q" th:value="${track.id}"/>
                 <button type="submit" th:text="${track.name}"></button>
             </form>
-            <span>-</span>
             <form th:action="@{/song/artist}">
 
                 <input type="hidden" name="q" th:value="${track.artists[0].getId()}"/>

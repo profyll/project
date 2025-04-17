@@ -5,8 +5,8 @@
   <title th:text="${name}">노래 정보</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #fdfbfb, #ebedee);
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #121212, #1e1e1e, #2c2c2c);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -114,12 +114,13 @@
       right: -320px;
       width: 300px;
       height: 100%;
-      background: #fff;
-      box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+      background: #1a1a1a;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.5);
       padding: 20px;
       overflow-y: auto;
       transition: right 0.3s ease;
       z-index: 999;
+      color: #eee;
     }
 
     #comment-panel.open {
@@ -129,9 +130,11 @@
     .comment-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.85em;
-      color: #666;
-      margin-bottom: 8px;
+      font-size: 0.9em;
+      color: #aaa;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
     }
 
     .comment-date {
@@ -146,6 +149,7 @@
     .comment-nickname {
       align-self: flex-start;
       font-weight: bold;
+      color: #f2a7a7;
     }
 
     .comment-box {
@@ -160,17 +164,21 @@
 
     .comment-content {
       text-align: left;
-      font-size: 1em;
-      color: #333;
-      line-height: 1.4;
+      font-size: 0.95em;
+      color: #ddd;
+      line-height: 1.5;
     }
 
     textarea {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      width: 93%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
       resize: vertical;
+      background-color: #2a2a2a;
+      color: #eee;
+      font-size: 0.9em;
+      margin-bottom: 10px;
     }
  #comment-tab.hidden {
       display: none;
@@ -179,23 +187,20 @@
     /* 폼 스타일 */
     form {
       margin-top: 20px;
+      margin-bottom: 15px;
     }
 
     button[type="submit"] {
       background-color: #ff4f4f;
       color: white;
-      padding: 10px 20px;
-      border-radius: 30px;
+      padding: 10px;
+      border-radius: 8px;
       border: none;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
-      transition: background-color 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 20px;
-      width: 100%; /* 버튼을 카드 너비에 맞춰서 확장 */
+      width: 100%;
+      transition: all 0.3s ease;
     }
 
     button[type="submit"]:hover {
@@ -204,7 +209,8 @@
     }
 
     button[type="submit"]:active {
-      transform: scale(0.95);
+      background-color: #ff3d3d;
+      transform: scale(1.02);
     }
 
 
@@ -228,7 +234,7 @@
   </div>
 
   <div id="comment-tab" onclick="toggleComments()">
-    💬 댓글
+    의견 남기기
   </div>
 
   <div th:if="${preview != null}">

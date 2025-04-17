@@ -31,6 +31,12 @@
             font-size: 20px;
             font-weight: bold;
         }
+        .logo a {
+            color: #1DB954;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline;
+        }
         .navbar .nav-center {
             flex: 1;
             display: flex;
@@ -130,7 +136,9 @@
 </head>
 <body>
 <div class="navbar">
-    <div class="logo">프로피파이</div>
+    <div class="logo">
+        <a href="/home"> FROPIFY </a>
+    </div>
     <div class="nav-center">
         <form th:action="@{/song/search}" method="post" class="search-form">
             <input type="text" id="b" name="b" placeholder="검색어를 입력하세요." required />
@@ -145,7 +153,7 @@
     <form id="logout-form" th:action="@{/user/logout}" method="post" style="display: none;"></form>
 </div>
 
-<h2>Spotify 노래 검색</h2>
+<h2>FROPIFY 노래 검색</h2>
 
 <form th:action="@{/song/search}">
 
