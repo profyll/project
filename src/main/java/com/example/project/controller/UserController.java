@@ -1,8 +1,10 @@
 package com.example.project.controller;
 
+import com.example.project.entity.Artist;
 import com.example.project.entity.SearchHistory;
 import com.example.project.entity.Song;
 import com.example.project.entity.User;
+import com.example.project.repository.ArtistRepository;
 import com.example.project.repository.SearchHistoryRepository;
 
 import com.example.project.repository.UserRepository;
@@ -32,6 +34,7 @@ public class UserController {
     private UserRepository userRepository;
     private SearchHistoryRepository searchHistoryRepository;
     private SongRepository songRepository;
+    private ArtistRepository artistRepository;
 
     @GetMapping("/mypage")
     public String mypageHandle(@SessionAttribute("user") Optional<User> user, Model model) {
@@ -43,9 +46,6 @@ public class UserController {
         User u = user.get();
         model.addAttribute("user", u);
 
-        // 좋아요한 곡
-        List<Song> likedSongs = userRepository.findLikedSongsByUserId(u.getId());
-        model.addAttribute("likedSongs", likedSongs);
 
         // 좋아요 (중복된 거 같음)
         List<Song> liked = songRepository.findByLikedSongByUserId(u.getId());
@@ -54,6 +54,13 @@ public class UserController {
         // 검색 기록
         List<SearchHistoryWithSong> rawHistory = searchHistoryRepository.getSearchHistoryWithSongByUserId(u.getId());
         model.addAttribute("searchHistory", rawHistory);
+
+            List<Artist> artistLiked = artistRepository.findByLikedArtistByUserId(user.get().getId());
+
+            model.addAttribute("likedA",artistLiked);
+
+        } else {
+
 
         // 이미지 경로 설정
         String imagePath = (u.getImage() != null && !u.getImage().isEmpty())

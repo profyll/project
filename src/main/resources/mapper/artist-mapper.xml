@@ -27,5 +27,21 @@
         WHERE artist_id = #{artistId}
         AND user_id = #{userId}
     </update>
+    <select id="findByLikedAndArtistIdAndUserId" parameterType="map" resultType="artist">
+        select * from artist
+        where artist_id = #{artistId}
+        and user_id = #{userId}
+        and liked = 1
+    </select>
+    <select id="findByLikedArtistByUserId" parameterType="map" resultType="artist">
+        SELECT
+        a.* FROM artist a WHERE a.user_id = #{userId} AND a.liked = true
+    </select>
+    <select id="topArtist" resultType="topArtist">
+        SELECT artist_id, artist_name, image, genre, COUNT(*) AS likeCount
+        FROM artist
+        WHERE liked = true GROUP BY artist_id, artist_name, image, genre
+        ORDER BY likeCount ASC LIMIT 10
+    </select>
 
 </mapper>

@@ -33,6 +33,12 @@
             font-weight: bold;
             color: #1DB954;
         }
+        .logo a {
+            color: #1DB954;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline;
+        }
 
         .nav-center {
             display: flex;
@@ -152,7 +158,9 @@
 </head>
 <body>
 <div class="navbar">
-    <div class="logo">FROPIFY</div>
+    <div class="logo">
+        <a href="/home"> FROPIFY </a>
+    </div>
     <div class="spacer"></div>
     <div class="nav-links">
         <a href="/home">홈</a>
@@ -209,6 +217,19 @@
                     <a th:href="@{/song/track(q=${one.songId})}"><img th:src="${one.image}" alt="cover"/></a>
                     <p th:text="${one.songName}"></p>
                     <p th:text="${one.artistName}"></p>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="section liked-artists">
+            <h3>❤️ 좋아요한 가수</h3>
+
+            <ul class="liked-song-list" th:each="one, iterStat : ${likedA}">
+                <li th:if="${iterStat.index < 5}">
+                    <a th:href="${'/song/artist?q=' + one.artistId}"><img th:src="${one.image}" alt="cover"/></a>
+                    <p th:text="${one.artistName}"></p>
+                    <p th:text="${one.genre}"></p>
                 </li>
             </ul>
 
