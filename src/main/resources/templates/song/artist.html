@@ -204,12 +204,43 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            white-space: nowrap;
+            display: inline-flex; /* 버튼을 flexbox로 설정 */
+            align-items: center; /* 텍스트와 아이콘 세로 정렬 */
+            justify-content: center; /* 텍스트와 아이콘 가로 정렬 */
+            width: 150px; /* 고정된 너비 */
+            height: 50px; /* 고정된 높이 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+            position: relative; /* 아이콘과 텍스트가 겹치지 않도록 */
+        }
+
+        .like-button .text {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+        }
+
+        .not-liked .text {
+            transform: translate(-1px, -1px);
+        }
+
+        .like-button .dummy {
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            display: inline-block;
+            position: absolute;
         }
 
         .like-button:hover {
             background-color: #1DB954;
             color: black;
         }
+
+        .like-button.liked {
+            color: #1DB954;
+        }
+
         body::-webkit-scrollbar {
             display: none;
         }
@@ -247,8 +278,11 @@
                 <form th:action="@{/song/artist-update-liked}" class="like-form">
                     <input type="hidden" name="artistId" th:value="${artistId}" />
                     <input type="hidden" name="liked" th:value="${liked}" />
-                    <button type="submit" class="like-button">
-                        <span th:text="${liked} ? '♥ Unlike' : '♡ Like'"></span>
+                    <button type="submit"
+                            class="like-button"
+                            th:classappend="${liked} ? '' : ' not-liked'">
+                        <span class="text" th:text="${liked} ? '♥ Unlike' : '♡ Like'"></span>
+                        <span class="dummy">♥ Unlike</span> <!-- 공간 확보용 -->
                     </button>
                 </form>
             </div>
