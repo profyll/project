@@ -6,22 +6,75 @@
 
 
   <style>
-    /* 전체 폰트 및 배경 스타일 */
+    /* 기본 세팅 */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #121212;
       color: #fff;
+      font-size: 16px;
     }
 
+    /* 타이틀 스타일 */
     h1, h2, h3, h4 {
       color: #fff;
+      margin: 0 0 16px 0;
     }
 
-    /* 폼 전체 스타일 */
+    /* 네비게이션 바 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #181818;
+      padding: 0 30px;
+      height: 85px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    .navbar .logo a {
+      color: #1db954;
+      font-size: 26px;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      gap: 20px;
+    }
+
+    .navbar .nav-links a {
+      color: #ccc;
+      font-weight: bold;
+      text-decoration: none;
+      padding: 12px 16px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .navbar .nav-links a:hover,
+    .navbar .nav-links a:focus,
+    .navbar .nav-links a:active {
+      background-color: #2c2c2c;
+      color: #fff;
+      outline: none;
+    }
+
+    /* 폼 */
     form#editForm {
       max-width: 400px;
-      margin: 40px auto;
+      margin: 140px auto 40px auto; /* 상단 여백 고려 */
       padding: 30px;
       background-color: #1e1e1e;
       border-radius: 12px;
@@ -46,18 +99,10 @@
       border-radius: 6px;
       background-color: #2a2a2a;
       color: #fff;
+      font-size: 15px;
     }
 
-    select {
-      background-color: #2a2a2a;
-      color: #fff; /* 글자 흰색으로 */
-      border: none;
-      padding: 10px;
-      border-radius: 6px;
-    }
-
-    /* 🔽 이건 일부 브라우저에서만 적용될 수 있음 */
-    option {
+    select option {
       background-color: #2a2a2a;
       color: #fff;
     }
@@ -71,6 +116,7 @@
       background-color: #1db954;
       color: white;
       font-weight: bold;
+      font-size: 15px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
@@ -79,11 +125,11 @@
       background-color: #1ed760;
     }
 
+    /* 프로필 이미지 */
     #profileImage {
       border-radius: 50%;
       transition: transform 0.3s ease;
     }
-
 
     #profileImage:hover {
       transform: scale(1.05);
@@ -100,7 +146,7 @@
       font-style: italic;
     }
 
-    /* ✅ 프로필 이미지 버튼들 스타일 */
+    /* 이미지 관련 버튼 */
     .image-buttons {
       display: flex;
       flex-direction: column;
@@ -109,35 +155,31 @@
       margin-top: 8px;
     }
 
-    /* 이미지 변경 버튼 - 메인 초록 */
     .image-buttons .primary-btn {
-      padding: 6px 14px;
-      font-size: 13px;
+      padding: 8px 16px;
+      font-size: 14px;
       border-radius: 6px;
       background-color: #1db954;
       color: white;
       border: none;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      width: auto; /* 👈 이걸로 너비 줄이기 */
-      min-width: 120px; /* 👈 버튼이 너무 작아지지 않게 최소 너비 */
+      min-width: 120px;
     }
 
     .image-buttons .primary-btn:hover {
       background-color: #1ed760;
     }
 
-    /* 기본 이미지로 - 작고 흐릿한 느낌 */
     .image-buttons .subtle-btn {
-      padding: 4px 10px;
-      font-size: 11px;
+      padding: 6px 12px;
+      font-size: 12px;
       color: #aaa;
       background-color: transparent;
       border: 1px solid #3a3a3a;
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.2s ease, color 0.2s ease;
-      width: auto; /* 👈 이것도 auto로 */
       min-width: 100px;
     }
 
@@ -146,12 +188,53 @@
       color: #fff;
     }
 
+    /* 링크 버튼 */
+    .edit-link {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background-color: transparent;
+      border: 1px solid #444;
+      font-size: 14px;
+    }
+
+    .edit-link:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      transform: scale(0.95);
+    }
+
+    .edit-link:active {
+      transform: scale(0.9);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
 
   </style>
 
 
 </head>
 <body>
+<div class="navbar">
+  <div class="logo">
+    <a href="/home">FROPIFY</a>
+  </div>
+
+  <div class="nav-links">
+    <a href="/home">홈</a>
+    <a href="/user/mypage">마이페이지</a>
+    <a href="/user/logout">로그아웃</a>
+  </div>
+</div>
+
+
+
+
+
+
 <!-- 🔵 전체 정보 수정 폼 -->
 <form id="editForm" th:action="@{/user/edit/go}" method="post" enctype="multipart/form-data">
 
