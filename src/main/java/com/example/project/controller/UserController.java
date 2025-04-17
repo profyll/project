@@ -62,6 +62,7 @@ public class UserController {
         model.addAttribute("searchHistory", rawHistory);
 
         return "user/mypage";
+
     }
 
 
