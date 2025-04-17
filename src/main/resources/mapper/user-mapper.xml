@@ -13,6 +13,14 @@
         select * from users where provider=#{provider} and provider_id=#{providerId}
     </select>
     <select id="findById" resultType="user" parameterType="int">
-        SELECT * FROM users WHERE id = #{id}
+        SELECT * FROM users where id = #{id}
     </select>
+
+    <select id="findLikedSongsByUserId" resultType="song" parameterType="int">
+        SELECT s.*
+        FROM song s
+        JOIN liked_songs l ON s.id = l.song_id
+        WHERE l.user_id = #{userId}
+    </select>
+
 </mapper>

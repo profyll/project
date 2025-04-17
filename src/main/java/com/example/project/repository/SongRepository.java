@@ -12,7 +12,9 @@ public interface SongRepository {
     public int create(Song song);
     public int delete(String id);
     public Song findBySongId(String songId);
+
     public Song findBySongIdAndUserId(@Param("songId") String songId, @Param("userId") int userId);
     public void update(@Param("songId") String songId, @Param("userId") int userId, @Param("liked") boolean liked);
     public List<Song> findByLikedSongByUserId(@Param("userId") int userId);
+
 }
