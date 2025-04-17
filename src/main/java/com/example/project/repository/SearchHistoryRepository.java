@@ -11,6 +11,8 @@ import java.util.List;
 @Mapper
 public interface SearchHistoryRepository {
     public int create(SearchHistory searchHistory);
+
     List<SearchHistory> findRecentSearchesByUserId(@Param("userId") int userId);
     List<SearchHistoryWithSong> getSearchHistoryWithSongByUserId(int userId);
+
 }

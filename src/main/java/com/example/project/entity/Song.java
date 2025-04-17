@@ -20,4 +20,5 @@ public class Song {
     private String preview;
     private boolean liked;
     private String songId;
+    private int userId;
 }

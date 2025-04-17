@@ -89,6 +89,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         .user-card {
             background-color: #1e1e1e;
             padding: 25px 30px;
@@ -101,6 +102,44 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+        }
+
+        .liked-song-list {
+            display: flex;
+            justify-content: flex-start; /* 가로로 배치 */
+            gap: 20px;
+            padding: 0;
+            margin-top: 15px;
+            list-style: none;
+            flex-wrap: nowrap; /* 세로로 넘어가지 않도록 설정 */
+        }
+
+        .liked-song-list li {
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            width: 150px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .liked-song-list li:hover {
+            transform: scale(1.05);
+        }
+
+        .liked-song-list img {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .liked-song-list p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #eee;
         }
     </style>
 </head>
@@ -115,7 +154,6 @@
     </div>
 </div>
 
-
 <div class="content">
     <div class="user-card">
         <h1>마이페이지</h1>
@@ -129,20 +167,20 @@
 
         <div class="section liked-songs">
             <h3>❤️ 좋아요한 노래</h3>
+          
+            <ul class="liked-song-list" th:each="one, iterStat : ${liked}">
+                <li th:if="${iterStat.index < 5}">
+                    <a th:href="@{/song/track(q=${one.songId})}"><img th:src="${one.image}" alt="cover"/></a>
+                    <p th:text="${one.songName}"></p>
+                    <p th:text="${one.artistName}"></p>
+                </li>
+            </ul>
 
-            <div th:if="${likedSongs.size() > 0}">
-                <ul>
-                    <li th:each="song : ${likedSongs}">
-                        <p th:text="|${song.songName} - ${song.artistName}|"></p>
-                    </li>
-                </ul>
-            </div>
-
-            <p th:if="${likedSongs.size() == 0}">좋아요한 노래가 없습니다.</p>
         </div>
 
         <div class="section search-history">
             <h3>🔍 최근 검색 기록</h3>
+
             <ul>
                 <li th:each="history : ${searchHistory}" style="display: flex; align-items: center; margin-bottom: 10px;">
                     <img th:src="${history.image}" alt="song image" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />

@@ -4,8 +4,10 @@ import com.example.project.entity.SearchHistory;
 import com.example.project.entity.Song;
 import com.example.project.entity.User;
 import com.example.project.repository.SearchHistoryRepository;
+
 import com.example.project.repository.UserRepository;
 import com.example.project.vo.SearchHistoryWithSong;
+import com.example.project.repository.SongRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,15 +27,25 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 
 public class UserController {
+
     private UserRepository userRepository;
     private SearchHistoryRepository searchHistoryRepository;
-
+    private SongRepository songRepository;
+  
     @GetMapping("/mypage")
     public String mypageHandle(
             @SessionAttribute(name = "user", required = false) User user,
             Model model) {
 
-        if (user == null) {
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+
+            List<Song> liked = songRepository.findByLikedSongByUserId(user.get().getId());
+
+            model.addAttribute("liked",liked);
+
+        } else {
+
             return "redirect:/index";
         }
 

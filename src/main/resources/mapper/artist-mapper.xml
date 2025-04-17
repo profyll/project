@@ -3,20 +3,29 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.project.repository.ArtistRepository">
+
     <insert id="create" parameterType="artist">
-        INSERT INTO artist ( artist_name, artist_id, image, genre, liked)
-        VALUES ( #{artistName}, #{artistId}, #{image}, #{genre}, #{liked})
+        INSERT INTO artist (user_id, artist_name, artist_id, image, genre, liked)
+        VALUES (#{userId}, #{artistName}, #{artistId}, #{image}, #{genre}, #{liked})
     </insert>
+
     <delete id="delete">
         DELETE FROM artist
         WHERE artist_id = #{artistId}
+        AND user_id = #{userId}
     </delete>
-    <select id="findByArtistId" parameterType="String" resultType="Artist">
-        SELECT * FROM artist WHERE artist_id = #{artistId}
+
+    <select id="findByArtistIdAndUserId" parameterType="map" resultType="Artist">
+        SELECT * FROM artist
+        WHERE artist_id = #{artistId}
+        AND user_id = #{userId}
     </select>
+
     <update id="update" parameterType="map">
         UPDATE artist
         SET liked = #{liked}
         WHERE artist_id = #{artistId}
+        AND user_id = #{userId}
     </update>
+
 </mapper>

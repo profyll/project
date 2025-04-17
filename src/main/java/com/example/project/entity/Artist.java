@@ -14,4 +14,5 @@ public class Artist {
     private String image;
     private String genre;
     private boolean liked;
+    private int userId;
 }

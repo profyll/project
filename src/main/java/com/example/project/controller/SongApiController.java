@@ -16,12 +16,15 @@ import com.example.project.vo.SearchHistoryWithSong;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
-import com.wrapper.spotify.model_objects.specification.Artist;
-import com.wrapper.spotify.model_objects.specification.Track;
+import com.wrapper.spotify.model_objects.IPlaylistItem;
+import com.wrapper.spotify.model_objects.specification.*;
 import com.wrapper.spotify.requests.data.artists.GetArtistRequest;
 import com.wrapper.spotify.requests.data.artists.GetArtistsTopTracksRequest;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistRequest;
+import com.wrapper.spotify.requests.data.playlists.GetPlaylistsItemsRequest;
 import com.wrapper.spotify.requests.data.search.simplified.SearchTracksRequest;
 import com.wrapper.spotify.requests.data.tracks.GetTrackRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -78,7 +81,7 @@ public class SongApiController {
 
 
     @GetMapping("/artist")
-    public String artist(@RequestParam("q") String artistId, Model model) {
+    public String artist(@RequestParam("q") String artistId, Model model, @SessionAttribute("user") User user) {
         try {
             String token = AccessToken.CreateToken.accesstoken();
 
@@ -92,7 +95,7 @@ public class SongApiController {
             GetArtistsTopTracksRequest topTracksRequest = api.getArtistsTopTracks(artistId, CountryCode.KR).build();
             Track[] tracks = topTracksRequest.execute();
 
-            com.example.project.entity.Artist existing = artistRepository.findByArtistId(artistId);
+            com.example.project.entity.Artist existing = artistRepository.findByArtistIdAndUserId(artistId, user.getId());
             boolean liked = existing != null && existing.isLiked();
 
 
@@ -113,6 +116,7 @@ public class SongApiController {
     }
 
     @GetMapping("/track")
+
     public String track(@RequestParam("q") String trackId, Model model, @SessionAttribute("user") User user) {
         try {
             String token = AccessToken.CreateToken.accesstoken();
@@ -151,6 +155,7 @@ public class SongApiController {
                     .preview(track.getPreviewUrl())
                     .liked(false)
                     .songId(track.getId())
+                    .userId(user.getId())
                     .build();
 
             // 댓글
@@ -165,7 +170,9 @@ public class SongApiController {
                 commentWithNicknames.add(dto);
             }
 
+
             com.example.project.entity.Song existing = songRepository.findBySongIdAndUserId(trackId,user.getId());
+
             boolean liked = existing != null && existing.isLiked();
 
             model.addAttribute("comments", commentWithNicknames);
@@ -187,14 +194,20 @@ public class SongApiController {
     }
 
     @GetMapping("/artist-update-liked")
-    public String updateArtistLiked(@RequestParam("artistId") String artistId, @RequestParam("liked") String likedStr, Model model) {
+    public String updateArtistLiked(@RequestParam("artistId") String artistId,
+                                    @RequestParam("liked") String likedStr,
+                                    @SessionAttribute("user") User user,
+                                    Model model) {
         try {
             boolean liked = Boolean.parseBoolean(likedStr);
+            int userId = user.getId(); // ✅ 사용자 ID 가져오기
 
-            com.example.project.entity.Artist existing = artistRepository.findByArtistId(artistId);
+            // ✅ userId와 artistId로 기존 좋아요 여부 확인
+            com.example.project.entity.Artist existing = artistRepository.findByArtistIdAndUserId(artistId, userId);
 
             if (existing != null) {
-                artistRepository.update(artistId, !liked);
+                // ✅ userId 기준으로 업데이트
+                artistRepository.update(artistId, userId, !liked);
             } else {
                 String token = AccessToken.CreateToken.accesstoken();
 
@@ -206,12 +219,14 @@ public class SongApiController {
                 Artist art = getArtistRequest.execute();
 
                 com.example.project.entity.Artist artist = com.example.project.entity.Artist.builder()
+                        .userId(userId) // ✅ userId 저장
                         .artistId(artistId)
                         .artistName(art.getName())
                         .genre(art.getGenres().length > 0 ? art.getGenres()[0] : "Unknown")
-                        .image(art.getImages().length > 0 ? art.getImages()[0].getUrl() : "https://via.placeholder.com/300") // ✅ 수정된 부분
+                        .image(art.getImages().length > 0 ? art.getImages()[0].getUrl() : "https://via.placeholder.com/300")
                         .liked(true)
                         .build();
+
                 artistRepository.create(artist);
             }
 
@@ -224,17 +239,20 @@ public class SongApiController {
         }
     }
 
+
     @GetMapping("/track-update-liked")
     public String updateTrackLiked(@RequestParam("songId") String songId,
                                    @RequestParam("liked") String likedStr,
+                                   @SessionAttribute("user") User user,
                                    Model model) {
         try {
-            boolean liked = Boolean.parseBoolean(likedStr);
+            int userId = user.getId();
 
-            Song existing = songRepository.findBySongId(songId);
+            boolean liked = Boolean.parseBoolean(likedStr);
+            Song existing = songRepository.findBySongIdAndUserId(songId, userId);
 
             if (existing != null) {
-                songRepository.update(songId, !liked);
+                songRepository.update(songId, userId, !liked);
             } else {
                 String token = AccessToken.CreateToken.accesstoken();
 
@@ -254,6 +272,7 @@ public class SongApiController {
                         .image(track.getAlbum().getImages()[0].getUrl())
                         .preview(track.getPreviewUrl())
                         .liked(true)
+                        .userId(userId)
                         .build();
 
                 songRepository.create(song);
@@ -267,6 +286,7 @@ public class SongApiController {
             return "error";
         }
     }
+
 
 
     @PostMapping("/track/{songId}/comment")
@@ -295,12 +315,5 @@ public class SongApiController {
 
         return "redirect:/song/track?q=" + songId;
     }
-
-
-
-
-
-
-
 
 }
