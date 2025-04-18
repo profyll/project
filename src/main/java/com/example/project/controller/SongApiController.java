@@ -59,6 +59,12 @@ public class SongApiController {
     public String search(@RequestParam(value = "q", required = false) String q,
                          @SessionAttribute(name = "user", required = false) User user,
                          Model model) {
+        // 로그인 안 한 경우 index로 리다이렉트
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        // 검색어 없이 진입하면 검색 페이지 보여줌
         if (q == null || q.isBlank()) {
             return "song/search";
         }
@@ -73,7 +79,6 @@ public class SongApiController {
             SearchTracksRequest searchRequest = api.searchTracks(q).limit(10).build();
             Track[] tracks = searchRequest.execute().getItems();
 
-
             model.addAttribute("tracks", Arrays.asList(tracks));
             return "song/result";
 
@@ -82,6 +87,7 @@ public class SongApiController {
             return "error";
         }
     }
+
 
 
     @GetMapping("/artist")
