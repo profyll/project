@@ -551,6 +551,10 @@
 </div>
 
 <script>
+
+
+
+
     // 첫 번째 팝업 닫기
     function closePopup() {
         const dontShowAgain = document.getElementById("dontShowAgain").checked;
@@ -614,6 +618,30 @@
         }
     });
 
+
+
+    const sliderState = {};
+
+    function slide(direction, sliderId) {
+        const wrapper = document.getElementById(sliderId);
+        const item = wrapper.querySelector('.slider-item');
+        if (!item) return;
+
+        const itemWidth = item.offsetWidth + 20; // 20px은 margin-right 값
+        if (!sliderState[sliderId]) {
+            sliderState[sliderId] = 0;
+        }
+
+        const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+
+        sliderState[sliderId] += direction * itemWidth;
+
+        // 스크롤 범위를 벗어나지 않게 조절
+        if (sliderState[sliderId] < 0) sliderState[sliderId] = 0;
+        if (sliderState[sliderId] > maxScroll) sliderState[sliderId] = maxScroll;
+
+        wrapper.style.transform = `translateX(-${sliderState[sliderId]}px)`;
+    }
 </script>
 
 
