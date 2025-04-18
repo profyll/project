@@ -157,13 +157,12 @@
             padding: 8px 14px;
             border-radius: 6px;
             transition: background-color 0.3s;
-            cursor: default;
+            cursor: pointer; /* 클릭 가능하도록 설정 */
         }
 
         .nav-links a:hover {
-            background-color: #2c2c2c;
+            background-color: #2c2c2c; /* hover 시 강조 효과 */
         }
-
         .content {
             margin-top: 70px;
             padding: 40px;
@@ -261,9 +260,6 @@
             text-decoration: none;
         }
 
-        a:hover {
-            text-decoration: underline;
-        }
 
 
 
@@ -496,7 +492,7 @@
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>
-        <a href="/user/logout" onclick="sessionStorage.removeItem('hidePopup')">로그아웃</a>
+        <a href="/user/logout" class="logout-link" onclick="sessionStorage.removeItem('hidePopup')">로그아웃</a>
     </div>
 </div>
 
