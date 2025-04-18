@@ -176,14 +176,19 @@ public class SongApiController {
 
             // 댓글
             List<SongComment> comments = songCommentRepository.getCommentsBySongId(trackId);
+            for(SongComment comment : comments){
+                System.out.println(comment.getUserId());
+            }
             List<CommentWithNickname> commentWithNicknames = new ArrayList<>();
 
             for (SongComment comment : comments) {
                 User user1 = userRepository.findById(comment.getUserId());
+                System.out.println(user1.getId());
                 CommentWithNickname dto = new CommentWithNickname();
                 dto.setComment(comment);
-                dto.setNickname(user1 != null ? user.getNickname() : "탈퇴한 유저"); // null 방지!
+                dto.setNickname(user1 != null ? userRepository.findById(user1.getId()).getNickname() : "탈퇴한 유저"); // null 방지!
                 commentWithNicknames.add(dto);
+                System.out.println(dto.getNickname());
             }
 
 
