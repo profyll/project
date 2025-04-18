@@ -10,7 +10,77 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
         }
+        /* 슬라이더 관련 */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 15px;
+        }
 
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+            will-change: transform;
+        }
+
+        /* 화면에 7개가 보이게 item 너비 조정 */
+        .slider-item {
+            flex: 0 0 calc((100% - (6 * 20px)) / 7); /* 총 여백 6개 = 6 * margin-right */
+            margin-right: 20px;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .slider-item:hover {
+            transform: scale(1.05);
+        }
+
+        .slider-item img {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .slider-item p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #eee;
+        }
+
+        /* 좌우 화살표 버튼 */
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            transition: background-color 0.3s;
+        }
+
+        .arrow-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .arrow-btn-left {
+            left: 10px;
+        }
+
+        .arrow-btn-right {
+            right: 10px;
+        }
         .navbar {
             background-color: #1a1a1a;
             padding: 20px 30px;
@@ -95,14 +165,14 @@
         }
 
         .content {
-            margin-top: 100px;
+            margin-top: 70px;
             padding: 40px;
             display: flex;
             gap: 40px;
         }
 
         .left-section {
-            width: 280px;
+            width: 200px; /* 기존의 280px에서 너비를 줄였습니다 */
         }
 
         .chart-section {
@@ -162,23 +232,6 @@
             color: #eee;
         }
 
-        /* 공통 item list */
-        .item-list {
-            display: flex;
-            flex-direction: row;
-            overflow-x: auto;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            gap: 30px;
-            padding-bottom: 10px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .item-list::-webkit-scrollbar {
-            display: none;
-        }
 
         .item-list li {
             flex: 0 0 auto;
@@ -196,8 +249,8 @@
         }
 
         .item-list img {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 10px;
             object-fit: cover;
             margin-bottom: 10px;
@@ -457,33 +510,42 @@
         </ul>
     </div>
 
-    <!-- 🔥 Top 10 트랙 -->
+    <!-- 오른쪽 슬라이더 섹션 -->
     <div class="chart-section">
+        <!-- 🔥 Top 10 트랙 -->
         <div class="section">
             <h3>🔥 Top 10 트랙</h3>
-            <ul class="item-list">
-                <li th:each="one : ${topSong}">
-                    <a th:href="@{'/song/track?q=' + ${one.songId}}">
-                        <img th:src="${one.image}" alt="track"/>
-                    </a>
-                    <p th:text="${one.songName}"></p>
-                    <p th:text="${one.artistName}"></p>
-                </li>
-            </ul>
+            <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'top-tracks-slider')">‹</button>
+                <div class="slider-wrapper" id="top-tracks-slider">
+                    <div class="slider-item" th:each="one : ${topSong}">
+                        <a th:href="@{'/song/track?q=' + ${one.songId}}">
+                            <img th:src="${one.image}" alt="track"/>
+                            <p th:text="${one.songName}"></p>
+                            <p th:text="${one.artistName}"></p>
+                        </a>
+                    </div>
+                </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'top-tracks-slider')">›</button>
+            </div>
         </div>
 
         <!-- 🌟 Top 10 아티스트 -->
         <div class="section">
             <h3>🌟 Top 10 아티스트</h3>
-            <ul class="item-list">
-                <li th:each="one : ${topArist}">
-                    <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
-                        <img th:src="${one.image}" alt="artist"/>
-                    </a>
-                    <p th:text="${one.artistName}"></p>
-                    <p th:text="${one.genre}"></p>
-                </li>
-            </ul>
+            <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'top-artists-slider')">‹</button>
+                <div class="slider-wrapper" id="top-artists-slider">
+                    <div class="slider-item" th:each="one : ${topArist}">
+                        <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                            <img th:src="${one.image}" alt="artist"/>
+                            <p th:text="${one.artistName}"></p>
+                            <p th:text="${one.genre}"></p>
+                        </a>
+                    </div>
+                </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'top-artists-slider')">›</button>
+            </div>
         </div>
     </div>
 </div>
@@ -553,7 +615,6 @@
     });
 
 </script>
-
 
 
 

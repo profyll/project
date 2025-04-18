@@ -13,6 +13,12 @@
       height: 100vh;
       margin: 0;
     }
+    .text-link-like {
+      color: inherit;
+      text-decoration: none;
+      cursor: default;
+    }
+
     .navbar {
       background-color: #1a1a1a;
       padding: 20px 30px;
@@ -329,11 +335,11 @@
   <img class="album-img" th:if="${image != null}" th:src="${image}" alt="앨범 이미지"/>
 
   <div class="track-info">
-    <span class="label">🎵 제목:</span> <span th:text="${name}">노래 제목</span>
+    <span class="label">🎵 제목: </span> <span th:text="${name}">노래 제목</span>
   </div>
 
   <div class="track-info">
-    <span class="label">🎤 아티스트:</span> <span th:text="${artist}">가수</span>
+    <span class="label">🎤 아티스트:</span><a th:href="@{/song/artist(q=${artistId})}" class="text-link-like">  <span th:text="${artist}">가수</span></a>
   </div>
 
   <div class="track-info">
