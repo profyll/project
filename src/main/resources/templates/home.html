@@ -388,7 +388,7 @@
 <div id="popup" class="popup">
     <div class="popup-content">
         <div class="popup-image-wrapper">
-            <img src="/icons/popup.png" alt="팝업 이미지" class="popup-img" onclick="openDetailPopup()" />
+            <img id="popupImage" src="/icons/popup1.png" alt="팝업 이미지" class="popup-img" onclick="openDetailPopup()" />
             <label class="popup-checkbox">
                 <input type="checkbox" id="dontShowAgain" /> 다시 보지 않기
             </label>
@@ -533,10 +533,25 @@
     // 첫 번째 팝업 표시 여부 확인
     window.addEventListener("DOMContentLoaded", () => {
         const hidePopup = sessionStorage.getItem("hidePopup");
+
         if (hidePopup !== "true") {
+            // 1. 랜덤 이미지 목록
+            const images = [
+                "/icons/popup1.png",
+                "/icons/popup2.png"
+            ];
+
+            // 2. 랜덤 이미지 선택
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+
+            // 3. 이미지 태그에 적용
+            document.getElementById("popupImage").src = randomImage;
+
+            // 4. 팝업 보이기
             document.getElementById("popup").style.display = "flex";
         }
     });
+
 </script>
 
 
