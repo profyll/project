@@ -13,22 +13,27 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 @Service
 @AllArgsConstructor
 @Slf4j
 public class KakaoApiService {
     private ObjectMapper objectMapper;
 
-    public KakaoTokenResponse exchangeToken(String code) throws JsonProcessingException {
+    public KakaoTokenResponse exchangeToken(String code) throws JsonProcessingException, UnknownHostException {
         RestTemplate restTemplate = new RestTemplate();
+        String currentIp = InetAddress.getLocalHost().getHostAddress();
 
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+
         body.add("grant_type", "authorization_code");
         body.add("client_id", "4704839b7ddb306761fe09edcb6e8998");
-        body.add("redirect_uri", "http://192.168.10.175:8080/auth/kakao/callback");
+        body.add("redirect_uri","http://" + currentIp + ":8080/auth/kakao/callback");
         body.add("code", code);
 
         ResponseEntity<String> response = restTemplate.exchange("https://kauth.kakao.com/oauth/token",

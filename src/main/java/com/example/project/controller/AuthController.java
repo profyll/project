@@ -27,11 +27,12 @@ public class AuthController {
     private KakaoApiService kakaoApiService;
 
     @GetMapping("/login")
-    public String KakaologinHandle(Model model) {
+    public String KakaologinHandle(Model model) throws UnknownHostException {
         // log.info("loginHandle...executed");
 
+        String currentIp = InetAddress.getLocalHost().getHostAddress();
         model.addAttribute("kakaoClientId", "4704839b7ddb306761fe09edcb6e8998");
-        model.addAttribute("kakaoRedirectUri", "http://192.168.10.175:8080/auth/kakao/callback");
+        model.addAttribute("kakaoRedirectUri", "http://" + currentIp + ":8080/auth/kakao/callback");
 
         return "auth/login";
     }
@@ -113,7 +114,7 @@ public class AuthController {
     @GetMapping("/kakao/callback")
     public String kakaoCallbackHandle(@RequestParam("code") String code,
                                       HttpSession session
-    ) throws JsonProcessingException {
+    ) throws JsonProcessingException, UnknownHostException {
 
         KakaoTokenResponse response = kakaoApiService.exchangeToken(code);
         log.info("response = {}", response);
