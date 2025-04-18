@@ -251,7 +251,7 @@
             <div class="slider-container">
                 <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'liked-songs-slider')">‹</button>
                 <div class="slider-wrapper" id="liked-songs-slider">
-                    <div class="slider-item" th:each="one, iterStat : ${liked}" th:if="${iterStat.index < 5}">
+                    <div class="slider-item" th:each="one, iterStat : ${liked}">
                         <a th:href="@{'/song/track?q=' + ${one.songId}}">
                             <img th:src="${one.image}" alt="cover"/>
                             <p th:text="${one.songName}">곡 제목</p>
@@ -270,7 +270,7 @@
             <div class="slider-container">
                 <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'liked-artists-slider')">‹</button>
                 <div class="slider-wrapper" id="liked-artists-slider">
-                    <div class="slider-item" th:each="one, iterStat : ${likedA}" th:if="${iterStat.index < 5}">
+                    <div class="slider-item" th:each="one, iterStat : ${likedA}" >
                         <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
                             <img th:src="${one.image}" alt="artist"/>
                             <p th:text="${one.artistName}">가수 이름</p>
@@ -287,7 +287,7 @@
             <div class="slider-container">
                 <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'search-history-slider')">‹</button>
                 <div class="slider-wrapper" id="search-history-slider">
-                    <div class="slider-item" th:each="history, iterStat : ${searchHistory}" th:if="${iterStat.index < 5}">
+                    <div class="slider-item" th:each="history, iterStat : ${searchHistory}" >
                         <a th:href="@{'/song/track?q=' + ${history.songId}}">
                             <img th:src="${history.image}" alt="cover"/>
                         </a>
