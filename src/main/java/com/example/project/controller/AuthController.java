@@ -79,10 +79,10 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String signupPostHandle(@ModelAttribute User user, Model model) {
+    public String signupPostHandle(@ModelAttribute User user, Model model, HttpSession session) {
         String email = user.getEmail();
         String password = user.getPassword();
-        String name = user.getNickname(); // 필요하다면
+        String name = user.getNickname();
 
         // 입력값 검증
         if (email == null || email.isBlank() ||
@@ -97,12 +97,17 @@ public class AuthController {
         if (found == null) {
             user.setProvider("LOCAL");
             userRepository.create(user);
+
+            // 세션에 로그인 정보 저장
+            session.setAttribute("user", user);
+
             return "redirect:/home";
         } else {
             model.addAttribute("signupError", "이미 존재하는 이메일입니다.");
             return "auth/signup";
         }
     }
+
 
 
     @GetMapping("/kakao/callback")

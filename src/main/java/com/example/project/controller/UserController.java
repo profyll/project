@@ -98,13 +98,23 @@ public class UserController {
     public String updateUserInfo(@RequestParam String name,
                                  @RequestParam(required = false) String email,
                                  @RequestParam(required = false) String gender,
-                                 @RequestParam(required = false) String password,
-                                 HttpSession session) {
+                                 @RequestParam(required = false) String currentPassword,
+                                 @RequestParam(required = false) String newPassword,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
 
         User user = (User) session.getAttribute("user");
 
         if (user != null) {
-            // 빈 문자열이면 null로 설정
+            // 비밀번호 변경 요청이 있는 경우
+            if (currentPassword != null && !currentPassword.isBlank()) {
+                if (!currentPassword.equals(user.getPassword())) {
+                    redirectAttributes.addFlashAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
+                    return "redirect:/user/edit"; // 다시 수정페이지로
+                }
+            }
+
+            // 빈 문자열은 null로 설정
             if (email != null && email.trim().isEmpty()) {
                 email = null;
             }
@@ -112,27 +122,29 @@ public class UserController {
                 gender = null;
             }
 
+            // 새 비밀번호가 있을 경우만 업데이트
+            String finalPassword = (newPassword != null && !newPassword.isBlank()) ? newPassword : user.getPassword();
+
             userRepository.updateUserInfo(
                     user.getId(),
                     name,
                     email,
                     gender,
-                    password
+                    finalPassword
             );
 
-            // 세션 정보도 업데이트
+            // 세션 정보 업데이트
             user.setNickname(name);
             user.setEmail(email);
             user.setGender(gender);
-            if (password != null && !password.isEmpty()) {
-                user.setPassword(password);
-            }
+            user.setPassword(finalPassword);
 
             session.setAttribute("user", user);
         }
 
         return "redirect:/user/mypage";
     }
+
 
 
 
