@@ -211,10 +211,218 @@
         a:hover {
             text-decoration: underline;
         }
+
+
+
+
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1e1e1e;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+            color: #fff;
+            width: 320px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 기본은 가운데 정렬 */
+            position: relative;
+        }
+
+        .popup-left-label {
+            width: 100%; /* 부모 영역만큼 확장 */
+            max-width: 300px; /* 이미지 크기와 동일하게 */
+            margin-top: 8px;
+            text-align: left;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .popup-image-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup-checkbox,
+        .popup-close-btn {
+            z-index: 2;
+        }
+
+
+        .popup-content p {
+            margin: 8px 0 16px;
+            font-size: 16px;
+            color: #ddd;
+            text-align: center;
+        }
+
+        .popup-content button {
+            padding: 5px 12px;
+            background-color: #1db954;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup-content button:hover {
+            background-color: #1ed760;
+        }
+
+        .popup-content label {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .popup-img {
+            width: auto;
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .popup-image-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .popup-checkbox {
+            position: absolute;
+            bottom: -20px;
+            left: -5px;
+            font-size: 13px;
+            color: #ccc;
+            background-color: rgba(30, 30, 30, 0.6);
+            padding: 4px 8px;
+            border-radius: 6px;
+            z-index: 1;
+        }
+
+        /* 오른쪽 아래 닫기 버튼 */
+        .popup-close-button {
+            padding: 2px 10px;
+            background-color: #1db954;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            z-index: 2;
+        }
+
+        .popup-close-btn:hover {
+            background-color: #1ed760;
+        }
+
+        #albumCover {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+
+
+        #recommendPopup .popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;      /* 수직 방향 자식 요소들 중앙 정렬 */
+            justify-content: center;  /* 수평 방향 정렬 */
+            text-align: center;       /* 텍스트 중앙 정렬 */
+            padding: 30px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            width: 320px;
+            max-width: 90%;
+        }
+
+        #recommendPopup img {
+            max-width: 200px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        #recommendPopup h3,
+        #recommendPopup p {
+            margin: 8px 0;
+            color: #ddd;
+            font-size: 16px;
+        }
+
+        #trackLink {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        #trackLink:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+            transition: all 0.2s ease;
+        }
+
     </style>
 </head>
 
-<body>
+<!-- 첫 번째 팝업 -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <div class="popup-image-wrapper">
+            <img src="/icons/popup.png" alt="팝업 이미지" class="popup-img" onclick="openDetailPopup()" />
+            <label class="popup-checkbox">
+                <input type="checkbox" id="dontShowAgain" /> 다시 보지 않기
+            </label>
+        </div>
+
+        <button onclick="closePopup()" class="popup-close-button">닫기</button>
+    </div>
+</div>
+
+
+
+<!-- 두 번째 상세 팝업 -->
+<div id="recommendPopup" class="popup">
+    <div class="popup-content">
+        <h3>🎧 오늘의 추천곡</h3>
+
+        <a id="trackLink" href="#">
+            <p id="songTitle">곡 제목</p>
+            <p id="artist">아티스트</p>
+            <img id="albumCover" src="" alt="앨범 이미지" style="width: 100px; border-radius: 10px;" />
+        </a>
+
+
+        <br />
+        <button onclick="closeRecommendPopup()">닫기</button>
+    </div>
+</div>
+
+
+
+
+
+
+
 <div class="navbar">
     <div class="logo">
         <a href="/home">FROPIFY</a>
@@ -228,7 +436,7 @@
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>
-        <a href="/user/logout">로그아웃</a>
+        <a href="/user/logout" onclick="sessionStorage.removeItem('hidePopup')">로그아웃</a>
     </div>
 </div>
 
@@ -279,5 +487,61 @@
         </div>
     </div>
 </div>
+
+<script>
+    // 첫 번째 팝업 닫기
+    function closePopup() {
+        const dontShowAgain = document.getElementById("dontShowAgain").checked;
+        if (dontShowAgain) {
+            sessionStorage.setItem("hidePopup", "true");
+        }
+        document.getElementById("popup").style.display = "none";
+    }
+
+    // 두 번째 팝업 열기 (랜덤 추천곡 불러오기)
+    function openDetailPopup() {
+        fetch("/recommend/random")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("추천 실패: " + data.error);
+                    return;
+                }
+
+                // DOM에 데이터 채우기
+                document.getElementById("songTitle").textContent = "🎵 " + data.name;
+                document.getElementById("artist").textContent = "👤 " + data.artist;
+                document.getElementById("albumCover").src = data.image;
+
+                // 트랙 링크 연결
+                const trackUrl = "/song/track?q=" + data.id;
+                document.getElementById("trackLink").href = trackUrl;
+
+                document.getElementById("recommendPopup").style.display = "flex";
+            })
+            .catch(error => {
+                console.error("추천 실패", error);
+                alert("노래 추천을 가져오지 못했어요 😢");
+            });
+    }
+
+    // 두 번째 팝업 닫기
+    function closeRecommendPopup() {
+        document.getElementById("recommendPopup").style.display = "none";
+    }
+
+    // 첫 번째 팝업 표시 여부 확인
+    window.addEventListener("DOMContentLoaded", () => {
+        const hidePopup = sessionStorage.getItem("hidePopup");
+        if (hidePopup !== "true") {
+            document.getElementById("popup").style.display = "flex";
+        }
+    });
+</script>
+
+
+
+
+
 </body>
 </html>
