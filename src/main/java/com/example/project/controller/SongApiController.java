@@ -11,8 +11,10 @@ import com.example.project.repository.SongCommentRepository;
 import com.example.project.repository.SearchHistoryRepository;
 import com.example.project.repository.SongRepository;
 import com.example.project.repository.UserRepository;
+import com.example.project.service.YouTubeApiService;
 import com.example.project.vo.CommentWithNickname;
 import com.example.project.vo.SearchHistoryWithSong;
+import com.example.project.vo.YoutubeItem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
@@ -49,6 +51,8 @@ public class SongApiController {
     private SpotifyApi spotifyApi;
     private SongRepository songRepository;
     private ArtistRepository artistRepository;
+    private YouTubeApiService youTubeApiService;
+
 
     private SongCommentRepository songCommentRepository;
     private UserRepository userRepository;
@@ -167,6 +171,9 @@ public class SongApiController {
                     .userId(user.getId())
                     .build();
 
+
+            YoutubeItem[] youtubeItems =youTubeApiService.findYoutubeVideoId(song.getArtistName() +" " +song.getSongName());
+
             // 댓글
             List<SongComment> comments = songCommentRepository.getCommentsBySongId(trackId);
             List<CommentWithNickname> commentWithNicknames = new ArrayList<>();
@@ -193,6 +200,8 @@ public class SongApiController {
             model.addAttribute("preview", track.getPreviewUrl());
             model.addAttribute("songId", track.getId());
             model.addAttribute("liked", liked);
+
+            model.addAttribute("youtubeItems", youtubeItems);
 
 
             return "song/track";
