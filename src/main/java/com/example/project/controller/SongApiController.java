@@ -189,6 +189,7 @@ public class SongApiController {
             model.addAttribute("album", track.getAlbum().getName());
             model.addAttribute("image", track.getAlbum().getImages()[0].getUrl());
             model.addAttribute("artist", track.getArtists()[0].getName());
+            model.addAttribute("artistId", track.getArtists()[0].getId());
             model.addAttribute("preview", track.getPreviewUrl());
             model.addAttribute("songId", track.getId());
             model.addAttribute("liked", liked);
