@@ -23,7 +23,7 @@ public class YouTubeApiService {
         RestTemplate restTemplate = new RestTemplate();
 
 
-        ResponseEntity<String> response = restTemplate.exchange("https://www.googleapis.com/youtube/v3/search?key=AIzaSyBKjXCAidMtNi8cqdkB49uE_kn2YI3QHVs&type=video&maxResults=2&q="+q,
+        ResponseEntity<String> response = restTemplate.exchange("https://www.googleapis.com/youtube/v3/search?key=AIzaSyBKjXCAidMtNi8cqdkB49uE_kn2YI3QHVs&type=video&maxResults=1&q="+q,
                 HttpMethod.GET,
                 null,
                 String.class
