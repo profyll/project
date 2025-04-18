@@ -342,12 +342,19 @@
         }
 
         .popup-img {
-            width: auto;
+            width: 100%;
             max-width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            margin-left: 10px; /* 살짝 오른쪽으로 밀기 */
             border-radius: 10px;
             margin-bottom: 20px;
             cursor: pointer;
+            object-fit: contain;
         }
+
+
 
         .popup-image-wrapper {
             position: relative;
