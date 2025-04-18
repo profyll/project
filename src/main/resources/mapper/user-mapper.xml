@@ -3,8 +3,9 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.project.repository.UserRepository">
      <insert id="create" parameterType="user">
-            insert into users (email, password, gender, nickname, image, created_at, provider, provider_id, picture)
-            values ( #{email}, #{password}, #{gender}, #{nickname}, #{image}, now(), #{provider}, #{providerId}, #{picture})
+         insert into users (
+         email, password, gender, nickname, image, created_at, provider, provider_id, picture )
+         values ( #{email}, #{password}, #{gender}, #{nickname}, #{image}, now(), #{provider}, #{providerId}, #{picture} )
      </insert>
     <select id="findByEmail" resultType="user" parameterType="String">
         select * from users where email=#{email}

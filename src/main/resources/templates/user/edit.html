@@ -211,7 +211,6 @@
       transform: scale(0.90); /* 클릭 시 더 눌림 */
     }
 
-
   </style>
 
 
@@ -233,9 +232,7 @@
 
 
 
-<!-- 🔵 전체 정보 수정 폼 -->
 <form id="editForm" th:action="@{/user/edit/go}" method="post" enctype="multipart/form-data">
-
 
   <!-- 🔵 프로필 이미지 섹션 -->
   <div style="text-align: center; margin-bottom: 30px;">
@@ -256,47 +253,44 @@
     </div>
   </div>
 
+  <!-- 🔵 사용자 정보 수정 -->
+  <div style="max-width: 300px; margin: 0 auto;">
 
+    <label for="name">닉네임</label>
+    <input type="text" id="name" name="name" th:value="${user.nickname}" required style="width: 100%; margin-bottom: 10px;" />
 
-  </div>
+    <label for="email">이메일 (선택)</label>
+    <input type="email" id="email" name="email"
+           th:value="${user.email}" placeholder="입력하지 않아도 됩니다"
+           style="width: 100%; margin-bottom: 10px;" />
 
+    <!-- 🔒 비밀번호 변경 (카카오 로그인 사용자는 숨김) -->
+    <div th:if="${user.provider != 'KAKAO'}">
+      <!-- 🔴 여기에 메시지가 뜸 -->
+      <div id="passwordError" style="color: red; font-size: 14px; margin-bottom: 5px;"></div>
 
-  <form th:action="@{/user/edit/go}" method="post">
-    <!-- 🔵 사용자 정보 수정 -->
-    <div style="max-width: 300px; margin: 0 auto;">
-
-      <label for="name">닉네임</label>
-      <input type="text" id="name" name="name" th:value="${user.nickname}" required style="width: 100%; margin-bottom: 10px;" />
-
-      <label for="email">이메일 (선택)</label>
-      <input type="email" id="email" name="email"
-             th:value="${user.email}" placeholder="입력하지 않아도 됩니다"
+      <label for="currentPassword">현재 비밀번호</label>
+      <input type="password" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호 입력"
              style="width: 100%; margin-bottom: 10px;" />
 
-      <!-- 🔒 비밀번호 변경 (카카오 로그인 사용자는 숨김) -->
-      <div th:if="${user.provider != 'KAKAO'}">
-        <label for="currentPassword">현재 비밀번호</label>
-        <input type="password" id="currentPassword" name="currentPassword" placeholder="현재 비밀번호 입력"
-               style="width: 100%; margin-bottom: 10px;" />
-
-        <!-- 새 비밀번호 입력 영역 -->
-        <label for="newPassword">새 비밀번호</label>
-        <input type="password" id="newPassword" name="newPassword" placeholder="변경할 비밀번호 입력"
-               style="width: 100%; margin-bottom: 10px;" />
-      </div>
-
-      <label for="gender">성별</label>
-      <select id="gender" name="gender" style="width: 100%; margin-bottom: 10px;">
-        <option th:selected="${user.gender == null}" value="">선택 안 함</option>
-        <option th:selected="${user.gender == '남성'}" value="남성">남성</option>
-        <option th:selected="${user.gender == '여성'}" value="여성">여성</option>
-      </select>
-
-      <div id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 15px;"></div>
-      <button type="submit" style="width: 100%;">정보 수정</button>
+      <!-- 새 비밀번호 입력 영역 -->
+      <label for="newPassword">새 비밀번호</label>
+      <input type="password" id="newPassword" name="newPassword" placeholder="변경할 비밀번호 입력"
+             style="width: 100%; margin-bottom: 10px;" />
     </div>
-  </form>
 
+
+    <label for="gender">성별</label>
+    <select id="gender" name="gender" style="width: 100%; margin-bottom: 10px;">
+      <option th:selected="${user.gender == null}" value="">선택 안 함</option>
+      <option th:selected="${user.gender == '남성'}" value="남성">남성</option>
+      <option th:selected="${user.gender == '여성'}" value="여성">여성</option>
+    </select>
+
+    <div id="statusMessage" style="color: #555; font-size: 14px; margin-bottom: 15px;"></div>
+    <button type="submit" style="width: 100%;">정보 수정</button>
+  </div>
+</form>
 
 
 
@@ -434,12 +428,17 @@
     const currentPwInput = document.getElementById("currentPassword");
     const statusMsg = document.getElementById("statusMessage");
     const newPwSection = document.getElementById("newPasswordSection");
+    const passwordError = document.getElementById("passwordError");
 
     const currentPw = currentPwInput.value.trim();
 
+    // 초기화
+    passwordError.innerText = "";
+    statusMsg.innerText = "";
+
     if (!currentPw) {
-      statusMsg.innerText = "현재 비밀번호를 입력해주세요.";
-      newPwSection.style.display = "none";
+      passwordError.innerText = "현재 비밀번호를 입력해주세요.";
+      if (newPwSection) newPwSection.style.display = "none";
       return;
     }
 
@@ -457,17 +456,22 @@
             .then(data => {
               if (data.match === true) {
                 statusMsg.innerText = "✅ 비밀번호 확인 완료!";
-                newPwSection.style.display = "block";
+                if (newPwSection) newPwSection.style.display = "block";
+                passwordError.innerText = "";
               } else {
-                statusMsg.innerText = "❌ 비밀번호가 일치하지 않습니다.";
-                newPwSection.style.display = "none";
+                passwordError.innerText = "❌ 비밀번호가 일치하지 않습니다.";
+                if (newPwSection) newPwSection.style.display = "none";
               }
             })
             .catch(() => {
-              statusMsg.innerText = "⚠️ 서버 오류가 발생했습니다. 다시 시도해주세요.";
-              newPwSection.style.display = "none";
+              passwordError.innerText = "⚠️ 서버 오류가 발생했습니다. 다시 시도해주세요.";
+              if (newPwSection) newPwSection.style.display = "none";
             });
   }
+
+
+
+
   </script>
  </body>
 </html>
