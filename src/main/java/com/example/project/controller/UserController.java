@@ -104,8 +104,12 @@ public class UserController {
         User user = (User) session.getAttribute("user");
 
         if (user != null) {
+            // 빈 문자열이면 null로 설정
             if (email != null && email.trim().isEmpty()) {
                 email = null;
+            }
+            if (gender != null && gender.trim().isEmpty()) {
+                gender = null;
             }
 
             userRepository.updateUserInfo(
@@ -129,6 +133,7 @@ public class UserController {
 
         return "redirect:/user/mypage";
     }
+
 
 
 
