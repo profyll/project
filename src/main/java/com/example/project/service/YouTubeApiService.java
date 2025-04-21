@@ -20,10 +20,14 @@ public class YouTubeApiService {
 
     public YoutubeItem[] findYoutubeVideoId(String q) throws JsonProcessingException {
 
+        String[] keys = new String[]{
+                "AIzaSyAGyzfhtXUhXoMZz-lyjWo9RWiaQENvIp8",
+                "AIzaSyBKjXCAidMtNi8cqdkB49uE_kn2YI3QHVs"
+        };
         RestTemplate restTemplate = new RestTemplate();
 
 
-        ResponseEntity<String> response = restTemplate.exchange("https://www.googleapis.com/youtube/v3/search?key=AIzaSyBKjXCAidMtNi8cqdkB49uE_kn2YI3QHVs&type=video&maxResults=1&q="+q,
+        ResponseEntity<String> response = restTemplate.exchange("https://www.googleapis.com/youtube/v3/search?key=AIzaSyAGyzfhtXUhXoMZz-lyjWo9RWiaQENvIp8&type=video&maxResults=1&q="+q,
                 HttpMethod.GET,
                 null,
                 String.class
