@@ -32,7 +32,7 @@ public class AuthController {
 
         String currentIp = InetAddress.getLocalHost().getHostAddress();
         model.addAttribute("kakaoClientId", "4704839b7ddb306761fe09edcb6e8998");
-        model.addAttribute("kakaoRedirectUri", "http://43.200.179.171:8080:8080/auth/kakao/callback");
+        model.addAttribute("kakaoRedirectUri", "http://43.200.179.171:8080/auth/kakao/callback");
 
         return "auth/login";
     }
@@ -71,7 +71,7 @@ public class AuthController {
         model.addAttribute("kakaoClientId", "4704839b7ddb306761fe09edcb6e8998");
         try {
             String currentIp = InetAddress.getLocalHost().getHostAddress();
-            model.addAttribute("kakaoRedirectUri", "http://43.200.179.171:8080:8080/auth/kakao/callback");
+            model.addAttribute("kakaoRedirectUri", "http://43.200.179.171:8080/auth/kakao/callback");
         } catch (UnknownHostException e) {
             e.printStackTrace();
             model.addAttribute("kakaoRedirectUri", "http://localhost:8080/auth/kakao/callback"); // fallback
