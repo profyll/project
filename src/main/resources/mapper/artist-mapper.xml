@@ -41,7 +41,7 @@
         SELECT artist_id, artist_name, image, genre, COUNT(*) AS likeCount
         FROM artist
         WHERE liked = true GROUP BY artist_id, artist_name, image, genre
-        ORDER BY likeCount ASC LIMIT 10
+        ORDER BY likeCount desc LIMIT 10
     </select>
 
 </mapper>
