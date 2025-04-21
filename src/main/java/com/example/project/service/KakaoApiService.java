@@ -33,7 +33,7 @@ public class KakaoApiService {
 
         body.add("grant_type", "authorization_code");
         body.add("client_id", "4704839b7ddb306761fe09edcb6e8998");
-        body.add("redirect_uri","http://" + currentIp + ":8080/auth/kakao/callback");
+        body.add("redirect_uri","http://43.200.179.171:8080/auth/kakao/callback");
         body.add("code", code);
 
         ResponseEntity<String> response = restTemplate.exchange("https://kauth.kakao.com/oauth/token",
