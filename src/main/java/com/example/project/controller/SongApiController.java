@@ -183,7 +183,6 @@ public class SongApiController {
 
             for (SongComment comment : comments) {
                 User user1 = userRepository.findById(comment.getUserId());
-                System.out.println(user1.getId());
                 CommentWithNickname dto = new CommentWithNickname();
                 dto.setComment(comment);
                 dto.setNickname(user1 != null ? userRepository.findById(user1.getId()).getNickname() : "탈퇴한 유저"); // null 방지!
