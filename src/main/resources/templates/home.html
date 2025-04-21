@@ -10,7 +10,77 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
         }
+        /* 슬라이더 관련 */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 15px;
+        }
 
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+            will-change: transform;
+        }
+
+        /* 화면에 7개가 보이게 item 너비 조정 */
+        .slider-item {
+            flex: 0 0 calc((100% - (6 * 20px)) / 7); /* 총 여백 6개 = 6 * margin-right */
+            margin-right: 20px;
+            background-color: #2a2a2a;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .slider-item:hover {
+            transform: scale(1.05);
+        }
+
+        .slider-item img {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .slider-item p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #eee;
+        }
+
+        /* 좌우 화살표 버튼 */
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            transition: background-color 0.3s;
+        }
+
+        .arrow-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .arrow-btn-left {
+            left: 10px;
+        }
+
+        .arrow-btn-right {
+            right: 10px;
+        }
         .navbar {
             background-color: #1a1a1a;
             padding: 20px 30px;
@@ -22,14 +92,20 @@
             height: 85px;
             z-index: 1000;
             box-sizing: border-box;
-            justify-content: space-between;
-            gap: 20px;
+        }
+
+        .navbar div {
+            width: 33.333%;
         }
 
         .logo a {
             font-size: 25px;
             font-weight: bold;
             color: #1DB954;
+            text-decoration: none;
+        }
+
+        .logo a:hover {
             text-decoration: none;
         }
 
@@ -46,7 +122,6 @@
             padding: 10px 15px;
             align-items: center;
             width: 100%;
-            max-width: 500px;
         }
 
         .search-form input {
@@ -54,7 +129,7 @@
             border: none;
             color: white;
             font-size: 17px;
-            padding: 8px;
+            padding: 10px;
             width: 100%;
             outline: none;
         }
@@ -64,7 +139,7 @@
             border: none;
             color: white;
             width: 90px;
-            padding: 6px 14px;
+            padding: 8px 14px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 15px;
@@ -73,6 +148,9 @@
         .nav-links {
             display: flex;
             gap: 20px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            justify-content: flex-end;
             align-items: center;
         }
 
@@ -86,18 +164,17 @@
         }
 
         .nav-links a:hover {
-            background-color: #2c2c2c;
+            background-color: #2c2c2c; /* hover 시 강조 효과 */
         }
-
         .content {
-            margin-top: 100px;
+            margin-top: 70px;
             padding: 40px;
             display: flex;
             gap: 40px;
         }
 
         .left-section {
-            width: 280px;
+            width: 200px; /* 기존의 280px에서 너비를 줄였습니다 */
         }
 
         .chart-section {
@@ -157,23 +234,6 @@
             color: #eee;
         }
 
-        /* 공통 item list */
-        .item-list {
-            display: flex;
-            flex-direction: row;
-            overflow-x: auto;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            gap: 30px;
-            padding-bottom: 10px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .item-list::-webkit-scrollbar {
-            display: none;
-        }
 
         .item-list li {
             flex: 0 0 auto;
@@ -191,8 +251,8 @@
         }
 
         .item-list img {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 10px;
             object-fit: cover;
             margin-bottom: 10px;
@@ -203,13 +263,225 @@
             text-decoration: none;
         }
 
-        a:hover {
-            text-decoration: underline;
+
+
+
+
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1e1e1e;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            display: none;
+            color: #fff;
+            width: 320px;
+            max-width: 90%;
+            text-align: center;
         }
+
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 기본은 가운데 정렬 */
+            position: relative;
+        }
+
+        .popup-left-label {
+            width: 100%; /* 부모 영역만큼 확장 */
+            max-width: 300px; /* 이미지 크기와 동일하게 */
+            margin-top: 8px;
+            text-align: left;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .popup-image-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .popup-checkbox,
+        .popup-close-btn {
+            z-index: 2;
+        }
+
+
+        .popup-content p {
+            margin: 8px 0 16px;
+            font-size: 16px;
+            color: #ddd;
+            text-align: center;
+        }
+
+        .popup-content button {
+            padding: 5px 12px;
+            background-color: #1db954;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .popup-content button:hover {
+            background-color: #1ed760;
+        }
+
+        .popup-content label {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
+        .popup-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            margin-left: 10px; /* 살짝 오른쪽으로 밀기 */
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            object-fit: contain;
+        }
+
+
+
+        .popup-image-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .popup-checkbox {
+            position: absolute;
+            bottom: -20px;
+            left: -5px;
+            font-size: 13px;
+            color: #ccc;
+            background-color: rgba(30, 30, 30, 0.6);
+            padding: 4px 8px;
+            border-radius: 6px;
+            z-index: 1;
+        }
+
+        /* 오른쪽 아래 닫기 버튼 */
+        .popup-close-button {
+            padding: 2px 10px;
+            background-color: #1db954;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            z-index: 2;
+        }
+
+        .popup-close-btn:hover {
+            background-color: #1ed760;
+        }
+
+        #albumCover {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+
+
+        #recommendPopup .popup-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;      /* 수직 방향 자식 요소들 중앙 정렬 */
+            justify-content: center;  /* 수평 방향 정렬 */
+            text-align: center;       /* 텍스트 중앙 정렬 */
+            padding: 30px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            width: 320px;
+            max-width: 90%;
+        }
+
+        #recommendPopup img {
+            max-width: 200px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        #recommendPopup h3,
+        #recommendPopup p {
+            margin: 8px 0;
+            color: #ddd;
+            font-size: 16px;
+        }
+
+        #trackLink {
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        #trackLink:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+            transition: all 0.2s ease;
+        }
+
     </style>
 </head>
 
-<body>
+<!-- 첫 번째 팝업 -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <div class="popup-image-wrapper">
+            <img id="popupImage" src="/icons/popup1.png" alt="팝업 이미지" class="popup-img" onclick="openDetailPopup()" />
+            <label class="popup-checkbox">
+                <input type="checkbox" id="dontShowAgain" /> 다시 보지 않기
+            </label>
+        </div>
+
+        <button onclick="closePopup()" class="popup-close-button">닫기</button>
+    </div>
+</div>
+
+
+
+<!-- 두 번째 상세 팝업 -->
+<div id="recommendPopup" class="popup">
+    <div class="popup-content">
+        <h3>🎧 오늘의 추천곡</h3>
+
+        <a id="trackLink" href="#">
+            <p id="songTitle">곡 제목</p>
+            <p id="artist">아티스트</p>
+            <img id="albumCover" src="" alt="앨범 이미지" style="width: 100px; border-radius: 10px;" />
+        </a>
+
+
+        <br />
+        <button onclick="closeRecommendPopup()">닫기</button>
+    </div>
+</div>
+
+
+
+
+
+
+
 <div class="navbar">
     <div class="logo">
         <a href="/home">FROPIFY</a>
@@ -223,7 +495,7 @@
     <div class="nav-links">
         <a href="/home">홈</a>
         <a href="/user/mypage">마이페이지</a>
-        <a href="/user/logout">로그아웃</a>
+        <a href="/user/logout" class="logout-link" onclick="sessionStorage.removeItem('hidePopup')">로그아웃</a>
     </div>
 </div>
 
@@ -244,35 +516,142 @@
         </ul>
     </div>
 
-    <!-- 🔥 Top 10 트랙 -->
+    <!-- 오른쪽 슬라이더 섹션 -->
     <div class="chart-section">
+        <!-- 🔥 Top 10 트랙 -->
         <div class="section">
             <h3>🔥 Top 10 트랙</h3>
-            <ul class="item-list">
-                <li th:each="one : ${topSong}">
-                    <a th:href="@{'/song/track?q=' + ${one.songId}}">
-                        <img th:src="${one.image}" alt="track"/>
-                    </a>
-                    <p th:text="${one.songName}"></p>
-                    <p th:text="${one.artistName}"></p>
-                </li>
-            </ul>
+            <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'top-tracks-slider')">‹</button>
+                <div class="slider-wrapper" id="top-tracks-slider">
+                    <div class="slider-item" th:each="one : ${topSong}">
+                        <a th:href="@{'/song/track?q=' + ${one.songId}}">
+                            <img th:src="${one.image}" alt="track"/>
+                            <p th:text="${one.songName}"></p>
+                            <p th:text="${one.artistName}"></p>
+                        </a>
+                    </div>
+                </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'top-tracks-slider')">›</button>
+            </div>
         </div>
 
         <!-- 🌟 Top 10 아티스트 -->
         <div class="section">
             <h3>🌟 Top 10 아티스트</h3>
-            <ul class="item-list">
-                <li th:each="one : ${topArist}">
-                    <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
-                        <img th:src="${one.image}" alt="artist"/>
-                    </a>
-                    <p th:text="${one.artistName}"></p>
-                    <p th:text="${one.genre}"></p>
-                </li>
-            </ul>
+            <div class="slider-container">
+                <button class="arrow-btn arrow-btn-left" onclick="slide(-1, 'top-artists-slider')">‹</button>
+                <div class="slider-wrapper" id="top-artists-slider">
+                    <div class="slider-item" th:each="one : ${topArist}">
+                        <a th:href="@{'/song/artist?q=' + ${one.artistId}}">
+                            <img th:src="${one.image}" alt="artist"/>
+                            <p th:text="${one.artistName}"></p>
+                            <p th:text="${one.genre}"></p>
+                        </a>
+                    </div>
+                </div>
+                <button class="arrow-btn arrow-btn-right" onclick="slide(1, 'top-artists-slider')">›</button>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+
+
+
+
+    // 첫 번째 팝업 닫기
+    function closePopup() {
+        const dontShowAgain = document.getElementById("dontShowAgain").checked;
+        if (dontShowAgain) {
+            sessionStorage.setItem("hidePopup", "true");
+        }
+        document.getElementById("popup").style.display = "none";
+    }
+
+    // 두 번째 팝업 열기 (랜덤 추천곡 불러오기)
+    function openDetailPopup() {
+        fetch("/recommend/random")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("추천 실패: " + data.error);
+                    return;
+                }
+
+                // DOM에 데이터 채우기
+                document.getElementById("songTitle").textContent = "🎵 " + data.name;
+                document.getElementById("artist").textContent = "👤 " + data.artist;
+                document.getElementById("albumCover").src = data.image;
+
+                // 트랙 링크 연결
+                const trackUrl = "/song/track?q=" + data.id;
+                document.getElementById("trackLink").href = trackUrl;
+
+                document.getElementById("recommendPopup").style.display = "flex";
+            })
+            .catch(error => {
+                console.error("추천 실패", error);
+                alert("노래 추천을 가져오지 못했어요 😢");
+            });
+    }
+
+    // 두 번째 팝업 닫기
+    function closeRecommendPopup() {
+        document.getElementById("recommendPopup").style.display = "none";
+    }
+
+    // 첫 번째 팝업 표시 여부 확인
+    window.addEventListener("DOMContentLoaded", () => {
+        const hidePopup = sessionStorage.getItem("hidePopup");
+
+        if (hidePopup !== "true") {
+            // 1. 랜덤 이미지 목록
+            const images = [
+                "/icons/popup1.png",
+                "/icons/popup2.png"
+            ];
+
+            // 2. 랜덤 이미지 선택
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+
+            // 3. 이미지 태그에 적용
+            document.getElementById("popupImage").src = randomImage;
+
+            // 4. 팝업 보이기
+            document.getElementById("popup").style.display = "flex";
+        }
+    });
+
+
+
+    const sliderState = {};
+
+    function slide(direction, sliderId) {
+        const wrapper = document.getElementById(sliderId);
+        const item = wrapper.querySelector('.slider-item');
+        if (!item) return;
+
+        const itemWidth = item.offsetWidth + 20; // 20px은 margin-right 값
+        if (!sliderState[sliderId]) {
+            sliderState[sliderId] = 0;
+        }
+
+        const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+
+        sliderState[sliderId] += direction * itemWidth;
+
+        // 스크롤 범위를 벗어나지 않게 조절
+        if (sliderState[sliderId] < 0) sliderState[sliderId] = 0;
+        if (sliderState[sliderId] > maxScroll) sliderState[sliderId] = maxScroll;
+
+        wrapper.style.transform = `translateX(-${sliderState[sliderId]}px)`;
+    }
+</script>
+
+
+
+
 </body>
 </html>

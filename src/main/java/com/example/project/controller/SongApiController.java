@@ -11,8 +11,10 @@ import com.example.project.repository.SongCommentRepository;
 import com.example.project.repository.SearchHistoryRepository;
 import com.example.project.repository.SongRepository;
 import com.example.project.repository.UserRepository;
+import com.example.project.service.YouTubeApiService;
 import com.example.project.vo.CommentWithNickname;
 import com.example.project.vo.SearchHistoryWithSong;
+import com.example.project.vo.YoutubeItem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.neovisionaries.i18n.CountryCode;
 import com.wrapper.spotify.SpotifyApi;
@@ -49,6 +51,8 @@ public class SongApiController {
     private SpotifyApi spotifyApi;
     private SongRepository songRepository;
     private ArtistRepository artistRepository;
+    private YouTubeApiService youTubeApiService;
+
 
     private SongCommentRepository songCommentRepository;
     private UserRepository userRepository;
@@ -59,6 +63,12 @@ public class SongApiController {
     public String search(@RequestParam(value = "q", required = false) String q,
                          @SessionAttribute(name = "user", required = false) User user,
                          Model model) {
+        // 로그인 안 한 경우 index로 리다이렉트
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        // 검색어 없이 진입하면 검색 페이지 보여줌
         if (q == null || q.isBlank()) {
             return "song/search";
         }
@@ -73,7 +83,6 @@ public class SongApiController {
             SearchTracksRequest searchRequest = api.searchTracks(q).limit(10).build();
             Track[] tracks = searchRequest.execute().getItems();
 
-
             model.addAttribute("tracks", Arrays.asList(tracks));
             return "song/result";
 
@@ -82,6 +91,7 @@ public class SongApiController {
             return "error";
         }
     }
+
 
 
     @GetMapping("/artist")
@@ -161,16 +171,23 @@ public class SongApiController {
                     .userId(user.getId())
                     .build();
 
+
+            YoutubeItem[] youtubeItems =youTubeApiService.findYoutubeVideoId(song.getArtistName() +" " +song.getSongName());
+
             // 댓글
             List<SongComment> comments = songCommentRepository.getCommentsBySongId(trackId);
+            for(SongComment comment : comments){
+                System.out.println(comment.getUserId());
+            }
             List<CommentWithNickname> commentWithNicknames = new ArrayList<>();
 
             for (SongComment comment : comments) {
                 User user1 = userRepository.findById(comment.getUserId());
                 CommentWithNickname dto = new CommentWithNickname();
                 dto.setComment(comment);
-                dto.setNickname(user1 != null ? user.getNickname() : "탈퇴한 유저"); // null 방지!
+                dto.setNickname(user1 != null ? userRepository.findById(user1.getId()).getNickname() : "탈퇴한 유저"); // null 방지!
                 commentWithNicknames.add(dto);
+                System.out.println(dto.getNickname());
             }
 
 
@@ -183,9 +200,12 @@ public class SongApiController {
             model.addAttribute("album", track.getAlbum().getName());
             model.addAttribute("image", track.getAlbum().getImages()[0].getUrl());
             model.addAttribute("artist", track.getArtists()[0].getName());
+            model.addAttribute("artistId", track.getArtists()[0].getId());
             model.addAttribute("preview", track.getPreviewUrl());
             model.addAttribute("songId", track.getId());
             model.addAttribute("liked", liked);
+
+            model.addAttribute("youtubeItems", youtubeItems);
 
 
             return "song/track";
