@@ -13,11 +13,15 @@ import com.example.project.repository.SongRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import lombok.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -191,13 +195,18 @@ public class UserController {
                 return result;
             }
 
+
+            // 저장할 실제 경로 - 서버에서 접근 가능한 외부 경로
+            String uploadDir = "/home/ubuntu/app/images/";  // 이건 서버 운영체제에 맞게 설정
+
             // 새 파일 이름 생성
             String fileName = "user_" + u.getId() + "_" + UUID.randomUUID() + extension;
-            Path uploadPath = Paths.get("src/main/resources/static/uploads/" + fileName);
+            Path uploadPath = Paths.get(uploadDir + fileName);  // 여기 경로 바꿈
             Files.createDirectories(uploadPath.getParent());
             Files.write(uploadPath, imageFile.getBytes());
 
             String imageUrl = "/uploads/" + fileName;
+
 
             // DB 반영
             u.setImage(imageUrl);
@@ -210,6 +219,16 @@ public class UserController {
             e.printStackTrace();
             result.put("error", "이미지 업로드 실패: " + e.getMessage());
             return result;
+        }
+    }
+
+    @Configuration
+    public class WebConfig implements WebMvcConfigurer {
+
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+            registry.addResourceHandler("/uploads/**")
+                    .addResourceLocations("file:/home/ubuntu/app/images/");
         }
     }
 
